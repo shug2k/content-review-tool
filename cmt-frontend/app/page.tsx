@@ -1,9 +1,19 @@
-import Image from 'next/image'
+import ContentCard from './components/content-card'
 
-export default function Home() {
+export default function ContentReview() {
   return (
-    <div className="bg-blue-500 p-5">
-      <h1 className="text-3xl text-white">Hello, Tailwind CSS!</h1>
+    <div className="grid grid-cols-3 gap-4">
+      <div className="col-span-1">
+        <ContentCard
+          contentType="image"
+          text="This is a test"
+          imgUrl="https://picsum.photos/300/300"
+        ></ContentCard>
+      </div>
+      <div className="col-span-1">
+      </div>
+      <div className="col-span-1">
+      </div>
     </div>
   )
 }
