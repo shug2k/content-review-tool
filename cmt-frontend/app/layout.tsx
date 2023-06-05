@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="flex bg-white border border-gray-300 items-center w-full h-16">
-          <p className="text-3xl font-medium px-4">Content Moderation Tool</p>
+          <p className="text-2xl font-medium px-8 lg:px-4">Content Moderation Tool</p>
         </div>
         {children}
       </body>
