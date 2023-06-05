@@ -17,7 +17,7 @@ type ContentCardProps = {
 const ContentCard: FC<ContentCardProps> = ({contentType, imgUrl, text}) => {
     return (
         <div className="w-96 h-96 bg-white shadow rounded-lg mt-5">
-          <div className="flex w-96 h-14 bg-blue-900 rounded-md items-center justify-center">
+          <div className="flex w-96 h-14 bg-blue-950 rounded-md items-center justify-center">
             <h1 className="text-2xl text-white text-center">Content</h1>
           </div>
           {contentType === 'text' && (

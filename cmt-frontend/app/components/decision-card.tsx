@@ -20,7 +20,7 @@ type DecisionCardProps = {
 const DecisionCard: FC<DecisionCardProps> = ({decisionTree}) => {
     return (
         <div className="w-96 h-96 bg-white shadow rounded-lg mt-5 relative">
-          <div className="flex w-96 h-14 bg-blue-900 rounded-md items-center justify-center">
+          <div className="flex w-96 h-14 bg-blue-950 rounded-md items-center justify-center">
             <h1 className="text-2xl text-white text-center">Decision</h1>
           </div>
           <div>
