@@ -10,8 +10,10 @@ type UserMetadataCardProps = {
 
 const UserMetadataCard: FC<UserMetadataCardProps> = ({id, name, email, phoneNumber, additionalInfo}) => {
     return (
-        <div className="w-full h-96 bg-gray-200 rounded-md shadow-md items-center">
-          <h1 className="text-center">User Info</h1>
+        <div className="w-96 h-96 bg-white shadow rounded-lg mt-5">
+          <div className="flex w-96 h-14 bg-gray-800 rounded-md items-center justify-center">
+            <h1 className="text-2xl text-white text-center">User Info</h1>
+          </div>
           <table className="border-separate border-spacing-4 table-fixed w-full mx-auto">
             <tbody>
             {id && 
