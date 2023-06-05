@@ -10,7 +10,7 @@ const DecisionCard: FC<DecisionCardProps> = ({decisionTree}) => {
           <div className="flex w-96 h-14 bg-blue-950 rounded-md items-center justify-center">
             <h1 className="text-2xl text-white text-center">Decision</h1>
           </div>
-          <div>
+          <div className="my-4">
             <h1 className="w-80 h-10 text-xl mx-2">Is this violating?</h1>
             <input className = "mx-4" type="radio" name="is-violating" value="Yes"/>Yes<br></br>
             <input className = "mx-4" type="radio" name="is-violating" value="No"/>No

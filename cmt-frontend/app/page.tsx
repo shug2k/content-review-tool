@@ -6,8 +6,9 @@ import UserMetadataCard from './components/user-metadata-card'
 export default function ContentReview() {
   return (
     <div>
-      <div className="flex bg-white border border-gray-300 justify-end items-center w-full h-16">
-        <p className="w-fit h-7 text-xl font-medium text-gray-500 px-4 mx-2">
+      <div className="flex bg-white border border-gray-300 md:justify-end items-center 
+        max-sm:justify-center w-full h-16">
+        <p className="w-fit h-7 text-xl font-medium text-gray-500 px-4 md:mx-2">
           <a className="mx-2 lg:mx-4 hover:text-black" href="">All Reviews</a>
           <a className="mx-2 lg:mx-4 hover:text-black" href="">Previous</a>
           <a className="mx-2 lg:mx-4 hover:text-black" href="">Next</a>

@@ -12,12 +12,14 @@ const ContentCard: FC<ContentCardProps> = ({contentType, imgUrl, text}) => {
           <div className="flex w-96 h-14 bg-blue-950 rounded-md items-center justify-center">
             <h1 className="text-2xl text-white text-center">Content</h1>
           </div>
-          {contentType === 'text' && (
-          <p className="text-center">{text}</p>
-          )}
-          {contentType === 'image' && (
-          <img src={imgUrl} alt="Image" className="w-fit mx-auto"></img>
-          )}
+          <div className="my-4">
+            {contentType === 'text' && (
+            <p className="text-center">{text}</p>
+            )}
+            {contentType === 'image' && (
+            <img src={imgUrl} alt="Image" className="w-fit mx-auto"></img>
+            )}
+          </div>
         </div>
     );
 }
