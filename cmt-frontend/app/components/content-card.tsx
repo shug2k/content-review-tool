@@ -24,7 +24,7 @@ const ContentCard: FC<ContentCardProps> = ({contentType, imgUrl, text}) => {
           <p className="text-center">{text}</p>
           )}
           {contentType === 'image' && (
-          <img src={imgUrl} alt="Image" className="w-64 h-64 mx-auto"></img>
+          <img src={imgUrl} alt="Image" className="w-fit mx-auto"></img>
           )}
         </div>
     );

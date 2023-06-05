@@ -16,20 +16,20 @@ const ContentMetadataCard: FC<ContentMetadataCardProps> = ({id, createTime, addi
             <tbody>
             {id && 
               <tr>
-                <td>ID</td>
-                <td>{id}</td>
+                <td className="text-left">ID</td>
+                <td className="text-left">{id}</td>
               </tr>
             }
             {createTime && 
               <tr>
-                <td>Creation Time</td>
-                <td>{createTime}</td>
+                <td className="text-left">Creation Time</td>
+                <td className="text-left">{createTime}</td>
               </tr>
             }
             {additionalInfo && 
               <tr>
-                <td>Additional Information</td>
-                <td>{additionalInfo}</td>
+                <td className="text-left">Additional Information</td>
+                <td className="text-left">{additionalInfo}</td>
               </tr>
             }
             </tbody>

@@ -18,32 +18,32 @@ const UserMetadataCard: FC<UserMetadataCardProps> = ({id, name, email, phoneNumb
             <tbody>
             {id && 
               <tr>
-                <td>ID</td>
-                <td>{id}</td>
+                <td className="text-left">ID</td>
+                <td className="text-left">{id}</td>
               </tr>
             }
             {name && 
               <tr>
-                <td>Name</td>
-                <td>{name}</td>
+                <td className="text-left">Name</td>
+                <td className="text-left">{name}</td>
               </tr>
             }
             {email && 
               <tr>
-                <td>Email</td>
-                <td>{email}</td>
+                <td className="text-left">Email</td>
+                <td className="text-left">{email}</td>
               </tr>
             }
             {phoneNumber && 
               <tr>
-                <td>Phone Number</td>
-                <td>{phoneNumber}</td>
+                <td className="text-left">Phone Number</td>
+                <td className="text-left">{phoneNumber}</td>
               </tr>
             }
             {additionalInfo && 
               <tr>
-                <td>Additional Information</td>
-                <td>{additionalInfo}</td>
+                <td className="text-left">Additional Information</td>
+                <td className="text-left">{additionalInfo}</td>
               </tr>
             }
             </tbody>

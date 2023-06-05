@@ -8,9 +8,9 @@ export default function ContentReview() {
     <div>
       <div className="flex bg-white border border-gray-300 justify-end items-center w-full h-16">
         <p className="w-fit h-7 text-xl font-medium text-gray-500 px-4 mx-2">
-          <a className="mx-2 lg:mx-4 hover:text-black" href="http://www.google.com">All Reviews</a>
-          <a className="mx-2 lg:mx-4 hover:text-black" href="http://www.google.com">Previous</a>
-          <a className="mx-2 lg:mx-4 hover:text-black" href="http://www.google.com">Next</a>
+          <a className="mx-2 lg:mx-4 hover:text-black" href="">All Reviews</a>
+          <a className="mx-2 lg:mx-4 hover:text-black" href="">Previous</a>
+          <a className="mx-2 lg:mx-4 hover:text-black" href="">Next</a>
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-1 lg:mx-8">
