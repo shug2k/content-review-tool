@@ -5,14 +5,6 @@ type ContentCardProps = {
     imgUrl?: string;
     text?: string;
 }
-/*
-<div className="Rectangle3 w-96 h-96 bg-white shadow rounded-lg"/>
-<div className="Rectangle9 w-96 h-14 bg-gray-800 rounded-md"/>
-<p className="ContentInfo text-2xl text-white">Content Info</p>
-<p className="1 text-base">1</p>
-<p className="CreationTime text-base">Creation Time</p>
-<p className="2023-05-2910:00 AM text-base">2023-05-29 10:00 AM</p>
-*/
 
 const ContentCard: FC<ContentCardProps> = ({contentType, imgUrl, text}) => {
     return (
