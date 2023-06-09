@@ -1,0 +1,7 @@
+Flask==2.2.5
+Flask-AppBuilder==4.3.0
+apache-airflow==2.6.1
+gunicorn==20.1.0
+psycopg2-binary==2.9.6
+Flask-SQLAlchemy==2.5.1
+Flask-Migrate==4.0.4

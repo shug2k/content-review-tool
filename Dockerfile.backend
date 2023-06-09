@@ -1,0 +1,21 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11.4
+
+# set up postgres DB
+RUN apt-get update && apt-get install -y postgresql gcc python3-dev libpq-dev sudo apache2 apache2-dev
+
+WORKDIR /usr/src/app
+RUN mkdir -p cmt-backend
+
+# Copy the current directory contents into the container at /app
+COPY ./cmt-backend /usr/src/app/cmt-backend
+
+# Install any needed packages specified in requirements.txt
+WORKDIR /usr/src/app/cmt-backend
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 6000 available to the world outside this container
+EXPOSE 6000
+
+# Run app.py when the container launches
+CMD ["bash", "setup.sh"]
