@@ -139,6 +139,7 @@ class ReviewRoutes:
         review = ReviewCMT(
             entity_id=request.POST.get("entity_id"),
             entity_type=request.POST.get("entity_type"),
+            entity_content=request.POST.get("entity_content"),
             entity_create_time=request.POST.get("entity_create_time"),
             entity_metadata=request.POST.get("entity_metadata"),
             user_id=request.POST.get("user_id"),
@@ -163,6 +164,8 @@ class ReviewRoutes:
             review.entity_id = request.POST.get("entity_id")
         if request.POST.get("entity_type") is not None:
             review.entity_type = request.POST.get("entity_type")
+        if request.POST.get("entity_content") is not None:
+            review.entity_content = request.POST.get("entity_content")
         if request.POST.get("entity_create_time") is not None:
             review.entity_create_time = request.POST.get("entity_create_time")
         if request.POST.get("entity_metadata") is not None:

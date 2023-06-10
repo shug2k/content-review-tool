@@ -24,6 +24,7 @@ class ReviewCMT(models.Model):
     update_time = models.DateTimeField()
     entity_id = models.CharField(128, default=None, blank=True, null=True)
     entity_type = models.CharField(128, default=None, blank=True, null=True)
+    entity_content = models.TextField()
     entity_create_time = models.DateTimeField(default=None, blank=True, null=True)
     entity_metadata = models.JSONField(default=None, blank=True, null=True)
     user_id = models.CharField(128, default=None, blank=True, null=True)
