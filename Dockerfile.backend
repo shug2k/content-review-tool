@@ -14,8 +14,8 @@ COPY ./cmt-backend /usr/src/app/cmt-backend
 WORKDIR /usr/src/app/cmt-backend
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 6000 available to the world outside this container
-EXPOSE 6000
+# Make port 4000 available to the world outside this container
+EXPOSE 4000
 
 # Run app.py when the container launches
 CMD ["bash", "setup.sh"]
