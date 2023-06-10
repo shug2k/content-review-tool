@@ -52,6 +52,17 @@ class QueueRoutes:
         return HttpResponse("OK")
 
     @staticmethod
+    def delete_queue(request: HttpRequest, queue_id: int) -> HttpResponse:
+        if request.method != "POST":
+            return HttpResponseNotAllowed(["POST"])
+
+        queue = QueueCMT.objects.get(id=queue_id)
+
+        queue.delete()
+
+        return HttpResponse("OK")
+
+    @staticmethod
     def get_reviews_for_queue(request: HttpRequest, queue_id: int) -> JsonResponse:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
