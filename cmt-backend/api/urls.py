@@ -13,6 +13,9 @@ urlpatterns = [
     path("review/<int:review_id>", routes.ReviewRoutes.get_review),
     path("review/<int:review_id>/next", routes.ReviewRoutes.get_next_review),
     path("review/<int:review_id>/prev", routes.ReviewRoutes.get_prev_review),
+    path(
+        "review/<int:review_id>/store-result", routes.ReviewRoutes.store_review_result
+    ),
     path("create-review", routes.ReviewRoutes.create_review),
     path("modify-review/<int:review_id>", routes.ReviewRoutes.modify_review),
     path("delete-review/<int:review_id>", routes.ReviewRoutes.delete_review),

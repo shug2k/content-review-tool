@@ -21,7 +21,7 @@ class QueueCMT(models.Model):
 
 class ReviewCMT(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
-    update_time = models.DateTimeField()
+    update_time = models.DateTimeField(auto_now=True)
     entity_id = models.CharField(128, default=None, blank=True, null=True)
     entity_type = models.CharField(128, default=None, blank=True, null=True)
     entity_content = models.TextField()

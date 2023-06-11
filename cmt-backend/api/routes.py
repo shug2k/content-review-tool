@@ -78,6 +78,7 @@ class ReviewRoutes:
             {
                 "entity_id": review.entity_id,
                 "entity_type": review.entity_type,
+                "entity_content": review.entity_content,
                 "entity_create_time": review.entity_create_time,
                 "entity_metadata": review.entity_metadata,
                 "user_id": review.user_id,
@@ -95,7 +96,7 @@ class ReviewRoutes:
 
         review = ReviewCMT.objects.get(id=review_id)
 
-        return ReviewRoutes.get_review_obj(review)
+        return ReviewRoutes.get_review_response(review)
 
     @staticmethod
     def get_next_review(request: HttpRequest, review_id: int) -> JsonResponse:
@@ -180,6 +181,20 @@ class ReviewRoutes:
             review.user_phone_number = request.POST.get("user_phone_number")
         if request.POST.get("user_metadata") is not None:
             review.user_metadata = request.POST.get("user_metadata")
+
+        review.save()
+
+        return HttpResponse("OK")
+
+    @staticmethod
+    def store_review_result(request: HttpRequest, review_id: int) -> HttpResponse:
+        if request.method != "POST":
+            return HttpResponseNotAllowed(["POST"])
+
+        review = ReviewCMT.objects.get(id=review_id)
+
+        if request.POST.get("questions_with_answers") is not None:
+            review.questions_with_answers = request.POST.get("questions_with_answers")
 
         review.save()
 

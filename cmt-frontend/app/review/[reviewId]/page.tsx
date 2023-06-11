@@ -1,9 +1,27 @@
-import ContentCard from './components/content-card'
-import ContentMetadataCard from './components/content-metadata-card'
-import DecisionCard from './components/decision-card'
-import UserMetadataCard from './components/user-metadata-card'
+import ContentCard from '../components/content-card'
+import ContentMetadataCard from '../components/content-metadata-card'
+import DecisionCard from '../components/decision-card'
+import UserMetadataCard from '../components/user-metadata-card'
 
-export default function ContentReview() {
+async function getData(reviewId: string) {
+  const res = await fetch('http://localhost:8000/review/' + reviewId);
+ 
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
+  }
+ 
+  return res.json();
+}
+
+export default async function ContentReview({
+  params: { reviewId },
+}: {
+  params: { reviewId: string }
+}) {
+  console.log(reviewId)
+
+  const data = await getData(reviewId);
+
   return (
     <div>
       <div className="flex bg-white border border-gray-300 md:justify-end items-center 
@@ -17,21 +35,21 @@ export default function ContentReview() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-1 lg:mx-8">
         <div className="col-span-1">
           <ContentCard
-            contentType="image"
-            text="This is a test"
-            imgUrl="https://picsum.photos/300/300"
+            contentType={data.entity_type}
+            text={data.entity_content}
+            imgUrl={data.entity_content}
           ></ContentCard>
           <ContentMetadataCard
-            id="1"
+            id={data.entity_id}
             createTime="2023-05-29"
           ></ContentMetadataCard>
         </div>
         <div className="col-span-1">
           <UserMetadataCard
-            id="10"
-            name="John Doe"
-            email="johndoe@email.com"
-            phoneNumber="555-555-5555"
+            id={data.user_id}
+            name={data.user_name}
+            email={data.user_email}
+            phoneNumber={data.user_phone_number}
           ></UserMetadataCard>
         </div>
         <div className="col-span-1">
