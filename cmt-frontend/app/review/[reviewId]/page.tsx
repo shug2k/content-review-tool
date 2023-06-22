@@ -18,8 +18,6 @@ export default async function ContentReview({
 }: {
   params: { reviewId: string }
 }) {
-  console.log(reviewId)
-
   const data = await getData(reviewId);
 
   return (

@@ -9,7 +9,14 @@ class QueueRoutes:
             return HttpResponseNotAllowed(["GET"])
 
         queues = QueueCMT.objects.all().order_by("name")
-        queue_array = [{"id": q.id, "name": q.name} for q in queues]
+        queue_array = [
+            {
+                "id": q.id,
+                "name": q.name,
+                "item_count": ReviewCMT.objects.filter(queue_id=q.id).count(),
+            }
+            for q in queues
+        ]
 
         return JsonResponse({"queues": queue_array})
 
