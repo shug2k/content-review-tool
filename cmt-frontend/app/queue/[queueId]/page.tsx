@@ -15,6 +15,7 @@ export default async function Reviews({
   params: { queueId: string }
 }) {
   const data = await getData(queueId);
+  console.log(data);
 
   return (
     <div>
@@ -32,11 +33,13 @@ export default async function Reviews({
             </tr>
           </thead>
           <tbody>
-            {data.queues.map((item: {entity_id: string, entity_type: string}) => {
+            {data.reviews.map((item: {id: number, entity_id: string, entity_type: string}) => {
               {console.log(item)}
               return (
                 <tr>
-                  <td className="text-left font-bold hover:bg-gray-300 border">{item.entity_id}</td>
+                  <td className="text-left font-medium hover:bg-gray-300 border">
+                    <a href={"/review/" + item.id}>{item.entity_id}</a>
+                  </td>
                   <td className="text-left border">{item.entity_type}</td>
                 </tr>
               );

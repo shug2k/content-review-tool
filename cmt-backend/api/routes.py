@@ -93,6 +93,7 @@ class ReviewRoutes:
                 "user_email": review.user_email,
                 "user_phone_number": review.user_phone_number,
                 "user_metadata": review.user_metadata,
+                "queue_id": review.queue_id,
             }
         )
 
@@ -188,6 +189,8 @@ class ReviewRoutes:
             review.user_phone_number = request.POST.get("user_phone_number")
         if request.POST.get("user_metadata") is not None:
             review.user_metadata = request.POST.get("user_metadata")
+        if request.POST.get("queue_id") is not None:
+            review.queue_id = request.POST.get("queue_id")
 
         review.save()
 

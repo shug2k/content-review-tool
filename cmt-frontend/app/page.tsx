@@ -28,11 +28,12 @@ export default async function Queues() {
             </tr>
           </thead>
           <tbody>
-            {data.queues.map((item: {name: string, item_count: string}) => {
-              {console.log(item)}
+            {data.queues.map((item: {id: number, name: string, item_count: string}) => {
               return (
                 <tr>
-                  <td className="text-left font-bold hover:bg-gray-300 border">{item.name}</td>
+                  <td className="text-left font-bold hover:bg-gray-300 border">
+                    <a href={"queue/" + item.id}>{item.name}</a>
+                  </td>
                   <td className="text-left border">{item.item_count}</td>
                 </tr>
               );
