@@ -26,8 +26,8 @@ export default async function ContentReview({
         max-sm:justify-center w-full h-16">
         <p className="w-fit h-7 text-xl font-medium text-gray-500 px-4 md:mx-2">
           <a className="mx-3 lg:mx-4 hover:text-black" href={"/queue/" + data.queue_id}>All Reviews</a>
-          <a className="mx-3 lg:mx-4 hover:text-black" href="">Previous</a>
-          <a className="mx-3 lg:mx-4 hover:text-black" href="">Next</a>
+          <a className="mx-3 lg:mx-4 hover:text-black" href={data.prev_review_id}>Previous</a>
+          <a className="mx-3 lg:mx-4 hover:text-black" href={data.next_review_id}>Next</a>
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-1 lg:mx-8">

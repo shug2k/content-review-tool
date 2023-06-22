@@ -1,3 +1,5 @@
+import bisect
+
 from django.http import JsonResponse, HttpResponse, HttpRequest, HttpResponseNotAllowed
 from api.models import QueueCMT, DecisionTreeCMT, ReviewCMT
 
@@ -80,7 +82,11 @@ class QueueRoutes:
 
 class ReviewRoutes:
     @staticmethod
-    def get_review_response(review: ReviewCMT) -> JsonResponse:
+    def get_review_response(
+        review: ReviewCMT,
+        prev_review_id: int | None = None,
+        next_review_id: int | None = None,
+    ) -> JsonResponse:
         return JsonResponse(
             {
                 "entity_id": review.entity_id,
@@ -94,6 +100,8 @@ class ReviewRoutes:
                 "user_phone_number": review.user_phone_number,
                 "user_metadata": review.user_metadata,
                 "queue_id": review.queue_id,
+                "prev_review_id": prev_review_id,
+                "next_review_id": next_review_id,
             }
         )
 
@@ -104,7 +112,25 @@ class ReviewRoutes:
 
         review = ReviewCMT.objects.get(id=review_id)
 
-        return ReviewRoutes.get_review_response(review)
+        next_review_id = None
+        prev_review_id = None
+        queue_reviews = list(
+            ReviewCMT.objects.filter(queue_id=review.queue.id).order_by("create_time")
+        )
+
+        prev_review_idx = bisect.bisect_left(
+            queue_reviews, review.create_time, key=lambda x: x.create_time
+        )
+        if prev_review_idx > 0:
+            prev_review_id = queue_reviews[prev_review_idx - 1].id
+
+        next_review_idx = bisect.bisect(
+            queue_reviews, review.create_time, key=lambda x: x.create_time
+        )
+        if next_review_idx < len(queue_reviews):
+            next_review_id = queue_reviews[next_review_idx].id
+
+        return ReviewRoutes.get_review_response(review, prev_review_id, next_review_id)
 
     @staticmethod
     def get_next_review(request: HttpRequest, review_id: int) -> JsonResponse:
@@ -156,6 +182,7 @@ class ReviewRoutes:
             user_email=request.POST.get("user_email"),
             user_phone_number=request.POST.get("user_phone_number"),
             user_metadata=request.POST.get("user_metadata"),
+            queue_id=request.POST.get("queue_id"),
         )
 
         review.save()
