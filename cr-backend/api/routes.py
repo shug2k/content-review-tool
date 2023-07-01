@@ -1,7 +1,7 @@
 import bisect
 
 from django.http import JsonResponse, HttpResponse, HttpRequest, HttpResponseNotAllowed
-from api.models import QueueCMT, DecisionTreeCMT, ReviewCMT
+from api.models import QueueCR, DecisionTreeCR, ReviewCR
 
 
 class QueueRoutes:
@@ -10,12 +10,12 @@ class QueueRoutes:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
 
-        queues = QueueCMT.objects.all().order_by("name")
+        queues = QueueCR.objects.all().order_by("name")
         queue_array = [
             {
                 "id": q.id,
                 "name": q.name,
-                "item_count": ReviewCMT.objects.filter(queue_id=q.id).count(),
+                "item_count": ReviewCR.objects.filter(queue_id=q.id).count(),
             }
             for q in queues
         ]
@@ -27,7 +27,7 @@ class QueueRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        queue = QueueCMT(
+        queue = QueueCR(
             name=request.POST["name"],
             decision_tree_id=request.POST.get("decision_tree_id"),
             prioritization_function=request.POST.get("prioritization_function"),
@@ -42,7 +42,7 @@ class QueueRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        queue = QueueCMT.objects.get(id=queue_id)
+        queue = QueueCR.objects.get(id=queue_id)
 
         if request.POST.get("name") is not None:
             queue.name = request.POST.get("name")
@@ -60,7 +60,7 @@ class QueueRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        queue = QueueCMT.objects.get(id=queue_id)
+        queue = QueueCR.objects.get(id=queue_id)
 
         queue.delete()
 
@@ -71,7 +71,7 @@ class QueueRoutes:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
 
-        reviews = ReviewCMT.objects.filter(queue_id=queue_id).order_by("create_time")
+        reviews = ReviewCR.objects.filter(queue_id=queue_id).order_by("create_time")
         review_array = [
             {"id": r.id, "entity_id": r.entity_id, "entity_type": r.entity_type}
             for r in reviews
@@ -83,7 +83,7 @@ class QueueRoutes:
 class ReviewRoutes:
     @staticmethod
     def get_review_response(
-        review: ReviewCMT,
+        review: ReviewCR,
         prev_review_id: int | None = None,
         next_review_id: int | None = None,
     ) -> JsonResponse:
@@ -110,12 +110,12 @@ class ReviewRoutes:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
 
-        review = ReviewCMT.objects.get(id=review_id)
+        review = ReviewCR.objects.get(id=review_id)
 
         next_review_id = None
         prev_review_id = None
         queue_reviews = list(
-            ReviewCMT.objects.filter(queue_id=review.queue.id).order_by("create_time")
+            ReviewCR.objects.filter(queue_id=review.queue.id).order_by("create_time")
         )
 
         prev_review_idx = bisect.bisect_left(
@@ -137,10 +137,10 @@ class ReviewRoutes:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
 
-        curr_review = ReviewCMT.objects.get(id=review_id)
+        curr_review = ReviewCR.objects.get(id=review_id)
 
         next_review = (
-            ReviewCMT.objects.filter(
+            ReviewCR.objects.filter(
                 queue_id=curr_review.queue.id, create_time__gt=curr_review.create_time
             )
             .order_by("create_time")
@@ -154,10 +154,10 @@ class ReviewRoutes:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
 
-        curr_review = ReviewCMT.objects.get(id=review_id)
+        curr_review = ReviewCR.objects.get(id=review_id)
 
         prev_review = (
-            ReviewCMT.objects.filter(
+            ReviewCR.objects.filter(
                 queue_id=curr_review.queue.id, create_time__lt=curr_review.create_time
             )
             .order_by("create_time")
@@ -171,7 +171,7 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        review = ReviewCMT(
+        review = ReviewCR(
             entity_id=request.POST.get("entity_id"),
             entity_type=request.POST.get("entity_type"),
             entity_content=request.POST.get("entity_content"),
@@ -194,7 +194,7 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        review = ReviewCMT.objects.get(id=review_id)
+        review = ReviewCR.objects.get(id=review_id)
 
         if request.POST.get("entity_id") is not None:
             review.entity_id = request.POST.get("entity_id")
@@ -228,7 +228,7 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        review = ReviewCMT.objects.get(id=review_id)
+        review = ReviewCR.objects.get(id=review_id)
 
         if request.POST.get("questions_with_answers") is not None:
             review.questions_with_answers = request.POST.get("questions_with_answers")
@@ -242,7 +242,7 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        review = ReviewCMT.objects.get(id=review_id)
+        review = ReviewCR.objects.get(id=review_id)
 
         review.delete()
 
@@ -255,7 +255,7 @@ class DecisionTreeRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        decision_tree = DecisionTreeCMT(
+        decision_tree = DecisionTreeCR(
             name=request.POST["name"],
             tree=request.POST.get("tree"),
         )
@@ -271,7 +271,7 @@ class DecisionTreeRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        decision_tree = DecisionTreeCMT.objects.get(id=decision_tree_id)
+        decision_tree = DecisionTreeCR.objects.get(id=decision_tree_id)
 
         if request.POST.get("name") is not None:
             decision_tree.name = request.POST.get("name")
@@ -289,7 +289,7 @@ class DecisionTreeRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        decision_tree = DecisionTreeCMT.objects.get(id=decision_tree_id)
+        decision_tree = DecisionTreeCR.objects.get(id=decision_tree_id)
 
         decision_tree.delete()
 

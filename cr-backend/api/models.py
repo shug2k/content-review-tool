@@ -2,24 +2,24 @@ from django.db import models
 from django.utils import timezone
 
 
-class DecisionTreeCMT(models.Model):
+class DecisionTreeCR(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     name = models.CharField(128)
     tree = models.JSONField()
 
 
-class QueueCMT(models.Model):
+class QueueCR(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     name = models.CharField(128)
     decision_tree = models.ForeignKey(
-        DecisionTreeCMT, on_delete=models.CASCADE, default=None, blank=True, null=True
+        DecisionTreeCR, on_delete=models.CASCADE, default=None, blank=True, null=True
     )
     prioritization_function = models.JSONField(default=None, blank=True, null=True)
 
 
-class ReviewCMT(models.Model):
+class ReviewCR(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     entity_id = models.CharField(128, default=None, blank=True, null=True)
@@ -33,7 +33,7 @@ class ReviewCMT(models.Model):
     user_phone_number = models.CharField(128, default=None, blank=True, null=True)
     user_metadata = models.JSONField(default=None, blank=True, null=True)
     queue = models.ForeignKey(
-        QueueCMT, on_delete=models.CASCADE, default=None, blank=True, null=True
+        QueueCR, on_delete=models.CASCADE, default=None, blank=True, null=True
     )
     questions_with_answers = models.JSONField(default=None, blank=True, null=True)
     score = models.FloatField(default=None, blank=True, null=True)

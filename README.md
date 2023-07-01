@@ -1,2 +1,2 @@
-# content-mod-tool
-Open-source content moderation tool
+# content-review-tool
+Open-source content review tool
