@@ -11,8 +11,6 @@ urlpatterns = [
     path("queue/<int:queue_id>", routes.QueueRoutes.get_reviews_for_queue),
     # Reviews
     path("review/<int:review_id>", routes.ReviewRoutes.get_review),
-    path("review/<int:review_id>/next", routes.ReviewRoutes.get_next_review),
-    path("review/<int:review_id>/prev", routes.ReviewRoutes.get_prev_review),
     path(
         "review/<int:review_id>/store-result", routes.ReviewRoutes.store_review_result
     ),

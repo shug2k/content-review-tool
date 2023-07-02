@@ -102,6 +102,7 @@ class ReviewRoutes:
                 "queue_id": review.queue_id,
                 "prev_review_id": prev_review_id,
                 "next_review_id": next_review_id,
+                "decision_tree": review.queue.decision_tree.tree,
             }
         )
 
@@ -131,40 +132,6 @@ class ReviewRoutes:
             next_review_id = queue_reviews[next_review_idx].id
 
         return ReviewRoutes.get_review_response(review, prev_review_id, next_review_id)
-
-    @staticmethod
-    def get_next_review(request: HttpRequest, review_id: int) -> JsonResponse:
-        if request.method != "GET":
-            return HttpResponseNotAllowed(["GET"])
-
-        curr_review = ReviewCR.objects.get(id=review_id)
-
-        next_review = (
-            ReviewCR.objects.filter(
-                queue_id=curr_review.queue.id, create_time__gt=curr_review.create_time
-            )
-            .order_by("create_time")
-            .first()
-        )
-
-        return ReviewRoutes.get_review_response(next_review)
-
-    @staticmethod
-    def get_prev_review(request: HttpRequest, review_id: int) -> JsonResponse:
-        if request.method != "GET":
-            return HttpResponseNotAllowed(["GET"])
-
-        curr_review = ReviewCR.objects.get(id=review_id)
-
-        prev_review = (
-            ReviewCR.objects.filter(
-                queue_id=curr_review.queue.id, create_time__lt=curr_review.create_time
-            )
-            .order_by("create_time")
-            .last()
-        )
-
-        return ReviewRoutes.get_review_response(prev_review)
 
     @staticmethod
     def create_review(request: HttpRequest) -> HttpResponse:
@@ -276,7 +243,7 @@ class DecisionTreeRoutes:
         if request.POST.get("name") is not None:
             decision_tree.name = request.POST.get("name")
         if request.POST.get("decision_tree") is not None:
-            decision_tree.decision_tree = request.POST.get("decision_tree")
+            decision_tree.tree = request.POST.get("decision_tree")
 
         decision_tree.save()
 
