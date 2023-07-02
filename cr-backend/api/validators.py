@@ -86,10 +86,16 @@ class DecisionTreeValidator:
 
         DecisionTreeValidator.topo_dfs(start_node, g, visited, stack)
 
-        return reversed(stack)
+        return list(reversed(stack))
 
     @staticmethod
-    def has_cycle(start_node: str, g: dict[str, list[str]]) -> Question | None:
+    def has_cycle(start_node: str, g: dict[str, list[str]]) -> str | None:
+        # check for self loops
+        for node, next_nodes in g.items():
+            for n_node in next_nodes:
+                if n_node == node:
+                    return node
+
         sorted_nodes = DecisionTreeValidator.topo_sort(start_node, g)
 
         node_set = set()
@@ -159,5 +165,5 @@ class DecisionTreeValidator:
         )
         if cycle_node is not None:
             raise ValidationError(
-                f"Your decision tree has a cycle! Question {cycle_node.tag} appears multiple times. Please remove any cycles"
+                f"Your decision tree has a cycle! Question {cycle_node} appears multiple times. Please remove any cycles"
             )

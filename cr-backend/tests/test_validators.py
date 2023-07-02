@@ -71,12 +71,18 @@ class TestDecisionTreeValidator:
             validators.DecisionTreeValidator.validate_tree(decision_tree)
 
     def test_has_cycle(self):
-        decision_tree = {
-            "start_question_tag": "w1",
-            "questions": [self.question_1, self.question_2],
+        question_2_loop = {
+            "tag": "q2",
+            "text": "Question 2",
+            "answers": [self.answer_1, self.answer_2],
         }
 
-        with pytest.raises(ValidationError, match="not in decision tree"):
+        decision_tree = {
+            "start_question_tag": "q1",
+            "questions": [self.question_1, question_2_loop],
+        }
+
+        with pytest.raises(ValidationError, match="decision tree has a cycle"):
             validators.DecisionTreeValidator.validate_tree(decision_tree)
 
 
@@ -99,7 +105,21 @@ class TestGraphIntegrity:
         for e, r in zip(expected_order, returned_order):
             assert e == r
 
-    def test_topo_sort_with_cycle(self):
+    def test_topo_sort_small_cycle(self):
+        start_node = "q1"
+        g = {
+            "q1": ["q2"],
+            "q2": ["q1"],
+        }
+
+        expected_order = ["q1", "q2", "q2"]
+
+        returned_order = validators.DecisionTreeValidator.topo_sort(start_node, g)
+
+        for e, r in zip(expected_order, returned_order):
+            assert e == r
+
+    def test_topo_sort_med_cycle(self):
         start_node = "q1"
         g = {
             "q1": ["q2", "q3"],
