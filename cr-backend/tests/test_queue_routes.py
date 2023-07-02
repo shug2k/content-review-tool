@@ -1,9 +1,8 @@
 import pytest
 
-class TestClassDemoInstance:
-    value = 0
 
+class TestQueueRoutes:
     @pytest.mark.django_db
-    def test_one(self, client):
-        response = client.get('/queues')
+    def test_queues_route(self, client):
+        response = client.get("/queues")
         assert response.status_code == 200

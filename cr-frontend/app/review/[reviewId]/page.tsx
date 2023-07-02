@@ -52,6 +52,7 @@ export default async function ContentReview({
         </div>
         <div className="col-span-1">
           <DecisionCard
+            decisionTree={data.decision_tree}
           ></DecisionCard>
         </div>
       </div>

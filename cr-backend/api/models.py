@@ -1,11 +1,12 @@
 from django.db import models
+from . import validators
 
 
 class DecisionTreeCR(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     name = models.CharField(128)
-    tree = models.JSONField()
+    tree = models.JSONField(validators=[validators.DecisionTreeValidator.validate_tree])
 
 
 class QueueCR(models.Model):
