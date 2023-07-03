@@ -5,11 +5,18 @@ type DecisionCardProps = {
 }
 
 const DecisionCard: FC<DecisionCardProps> = ({decisionTree}) => {
+  // state for current question/answer array
+  // state for current question
+  // state for current answer
+  // state for highlighting back button
+  // state for highlighting next button, and if next is next or submit (needs 3 states)
+
   // function for handling next
   // function for handling back
   // function for handling submit
 
   // array for question/answer tags
+
   return (
     <div className="w-96 h-96 bg-white shadow rounded-lg mt-5 relative">
       <div className="flex w-96 h-14 bg-blue-950 rounded-md items-center justify-center">

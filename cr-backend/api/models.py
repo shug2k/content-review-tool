@@ -8,6 +8,26 @@ class DecisionTreeCR(models.Model):
     name = models.CharField(128)
     tree = models.JSONField(validators=[validators.DecisionTreeValidator.validate_tree])
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    @staticmethod
+    def default_decision_tree():
+        return {
+            "start_question_tag": "is_violating",
+            "questions": [
+                {
+                    "tag": "is_violating",
+                    "text": "Is this content violating?",
+                    "answers": [
+                        {"tag": "yes", "text": "Yes", "decision": "yes_violating"},
+                        {"tag": "no", "text": "No", "decision": "no_violating"},
+                    ],
+                }
+            ],
+        }
+
 
 class QueueCR(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)

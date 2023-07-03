@@ -1,4 +1,5 @@
 import bisect
+import json
 
 from django.http import JsonResponse, HttpResponse, HttpRequest, HttpResponseNotAllowed
 from api.models import QueueCR, DecisionTreeCR, ReviewCR
@@ -27,10 +28,16 @@ class QueueRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
+        request_data = json.loads(request.body)
+
         queue = QueueCR(
-            name=request.POST["name"],
-            decision_tree_id=request.POST.get("decision_tree_id"),
-            prioritization_function=request.POST.get("prioritization_function"),
+            name=request_data["name"],
+            decision_tree=DecisionTreeCR.objects.get(
+                name=request_data.get("decision_tree_name")
+            )
+            if "decision_tree_name" in request_data
+            else None,
+            prioritization_function=request_data.get("prioritization_function"),
         )
 
         queue.save()
@@ -42,14 +49,18 @@ class QueueRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
+        request_data = json.loads(request.body)
+
         queue = QueueCR.objects.get(id=queue_id)
 
-        if request.POST.get("name") is not None:
-            queue.name = request.POST.get("name")
-        if request.POST.get("decision_tree_id") is not None:
-            queue.decision_tree_id = request.POST.get("decision_tree_id")
-        if request.POST.get("prioritization_function") is not None:
-            queue.prioritization_function = request.POST.get("prioritization_function")
+        if "name" in request_data:
+            queue.name = request_data["name"]
+        if "decision_tree_name" in request_data:
+            queue.decision_tree = DecisionTreeCR.objects.get(
+                name=request_data["decision_tree_name"]
+            )
+        if "prioritization_function" in request_data:
+            queue.prioritization_function = request_data["prioritization_function"]
 
         queue.save()
 
@@ -102,7 +113,9 @@ class ReviewRoutes:
                 "queue_id": review.queue_id,
                 "prev_review_id": prev_review_id,
                 "next_review_id": next_review_id,
-                "decision_tree": review.queue.decision_tree.tree,
+                "decision_tree": review.queue.decision_tree.tree
+                if review.queue.decision_tree
+                else DecisionTreeCR.default_decision_tree(),
             }
         )
 
@@ -138,18 +151,20 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
+        request_data = json.loads(request.body)
+
         review = ReviewCR(
-            entity_id=request.POST.get("entity_id"),
-            entity_type=request.POST.get("entity_type"),
-            entity_content=request.POST.get("entity_content"),
-            entity_create_time=request.POST.get("entity_create_time"),
-            entity_metadata=request.POST.get("entity_metadata"),
-            user_id=request.POST.get("user_id"),
-            user_name=request.POST.get("user_name"),
-            user_email=request.POST.get("user_email"),
-            user_phone_number=request.POST.get("user_phone_number"),
-            user_metadata=request.POST.get("user_metadata"),
-            queue_id=request.POST.get("queue_id"),
+            entity_id=request_data.get("entity_id"),
+            entity_type=request_data.get("entity_type"),
+            entity_content=request_data["entity_content"],
+            entity_create_time=request_data.get("entity_create_time"),
+            entity_metadata=request_data.get("entity_metadata"),
+            user_id=request_data.get("user_id"),
+            user_name=request_data.get("user_name"),
+            user_email=request_data.get("user_email"),
+            user_phone_number=request_data.get("user_phone_number"),
+            user_metadata=request_data.get("user_metadata"),
+            queue=QueueCR.objects.get(name=request_data["queue_name"]),
         )
 
         review.save()
@@ -161,30 +176,32 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
+        request_data = json.loads(request.body)
+
         review = ReviewCR.objects.get(id=review_id)
 
-        if request.POST.get("entity_id") is not None:
-            review.entity_id = request.POST.get("entity_id")
-        if request.POST.get("entity_type") is not None:
-            review.entity_type = request.POST.get("entity_type")
-        if request.POST.get("entity_content") is not None:
-            review.entity_content = request.POST.get("entity_content")
-        if request.POST.get("entity_create_time") is not None:
-            review.entity_create_time = request.POST.get("entity_create_time")
-        if request.POST.get("entity_metadata") is not None:
-            review.entity_metadata = request.POST.get("entity_metadata")
-        if request.POST.get("user_id") is not None:
-            review.user_id = request.POST.get("user_id")
-        if request.POST.get("user_name") is not None:
-            review.user_name = request.POST.get("user_name")
-        if request.POST.get("user_email") is not None:
-            review.user_email = request.POST.get("user_email")
-        if request.POST.get("user_phone_number") is not None:
-            review.user_phone_number = request.POST.get("user_phone_number")
-        if request.POST.get("user_metadata") is not None:
-            review.user_metadata = request.POST.get("user_metadata")
-        if request.POST.get("queue_id") is not None:
-            review.queue_id = request.POST.get("queue_id")
+        if "entity_id" in request_data:
+            review.entity_id = request_data["entity_id"]
+        if "entity_type" in request_data:
+            review.entity_type = request_data["entity_type"]
+        if "entity_content" in request_data:
+            review.entity_content = request_data["entity_content"]
+        if "entity_create_time" in request_data:
+            review.entity_create_time = request_data["entity_create_time"]
+        if "entity_metadata" in request_data:
+            review.entity_metadata = request_data["entity_metadata"]
+        if "user_id" in request_data:
+            review.user_id = request_data["user_id"]
+        if "user_name" in request_data:
+            review.user_name = request_data["user_name"]
+        if "user_email" in request_data:
+            review.user_email = request_data["user_email"]
+        if "user_phone_number" in request_data:
+            review.user_phone_number = request_data["user_phone_number"]
+        if "user_metadata" in request_data:
+            review.user_metadata = request_data["user_metadata"]
+        if "queue_name" in request_data:
+            review.queue = QueueCR.objects.get(name=request_data["queue_name"])
 
         review.save()
 
@@ -195,10 +212,11 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
+        request_data = json.loads(request.body)
+
         review = ReviewCR.objects.get(id=review_id)
 
-        if request.POST.get("questions_with_answers") is not None:
-            review.questions_with_answers = request.POST.get("questions_with_answers")
+        review.questions_with_answers = request_data["questions_with_answers"]
 
         review.save()
 
@@ -222,9 +240,11 @@ class DecisionTreeRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
+        request_data = json.loads(request.body)
+
         decision_tree = DecisionTreeCR(
-            name=request.POST["name"],
-            tree=request.POST.get("tree"),
+            name=request_data["name"],
+            tree=request_data["tree"],
         )
 
         decision_tree.save()
@@ -238,12 +258,14 @@ class DecisionTreeRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
+        request_data = json.loads(request.body)
+
         decision_tree = DecisionTreeCR.objects.get(id=decision_tree_id)
 
-        if request.POST.get("name") is not None:
-            decision_tree.name = request.POST.get("name")
-        if request.POST.get("decision_tree") is not None:
-            decision_tree.tree = request.POST.get("decision_tree")
+        if "name" in request_data:
+            decision_tree.name = request_data["name"]
+        if "decision_tree" in request_data:
+            decision_tree.tree = request_data["decision_tree"]
 
         decision_tree.save()
 
