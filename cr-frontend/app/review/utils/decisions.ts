@@ -20,34 +20,37 @@ export interface QuestionWithAnswer {
   answerTag: string;
 }
 
-export async function handleSubmitClick({
-  params: { questionsWithAnswers, decisionTree, currQuestion, currAnswer },
-}: {
-  params: {
-    questionsWithAnswers: QuestionWithAnswer[];
-    decisionTree: DecisionTree;
-    currQuestion: Question;
-    currAnswer: Answer;
-  };
-}): Promise<void> {
+export async function handleSubmitClick(
+  reviewId: string,
+  questionsWithAnswers: QuestionWithAnswer[],
+  currentQuestion: Question,
+  currentAnswer: Answer
+): Promise<void> {
   const updatedQuestionsWithAnswers = [
     ...questionsWithAnswers,
-    { questionTag: currQuestion.tag, answerTag: currAnswer.tag },
+    { questionTag: currentQuestion.tag, answerTag: currentAnswer.tag },
   ];
 
-  // insert call to backend here
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      questions_with_answers: updatedQuestionsWithAnswers,
+    }),
+    mode: "no-cors" as RequestMode, // should remove this when going to prod
+  };
+  const res = await fetch(
+    "http://localhost:8000/review/" + reviewId + "/store-result",
+    requestOptions
+  );
 
   return;
 }
 
-export function handleBackClick({
-  params: { questionsWithAnswers, decisionTree },
-}: {
-  params: {
-    questionsWithAnswers: QuestionWithAnswer[];
-    decisionTree: DecisionTree;
-  };
-}): {
+export function handleBackClick(
+  questionsWithAnswers: QuestionWithAnswer[],
+  decisionTree: DecisionTree
+): {
   updatedQuestionsWithAnswers: QuestionWithAnswer[];
   prevQuestion: Question;
 } {
@@ -73,20 +76,16 @@ export function handleBackClick({
   };
 }
 
-export function handleNextClick({
-  params: { questionsWithAnswers, decisionTree, currQuestion, currAnswer },
-}: {
-  params: {
-    questionsWithAnswers: QuestionWithAnswer[];
-    decisionTree: DecisionTree;
-    currQuestion: Question;
-    currAnswer: Answer;
-  };
-}): {
+export function handleNextClick(
+  questionsWithAnswers: QuestionWithAnswer[],
+  decisionTree: DecisionTree,
+  currentQuestion: Question,
+  currentAnswer: Answer
+): {
   updatedQuestionsWithAnswers: QuestionWithAnswer[];
   nextQuestion: Question;
 } {
-  if (currAnswer.next_question_tag === undefined) {
+  if (currentAnswer.next_question_tag === undefined) {
     throw new Error(
       "answer does not have a next question! This should have gone to submit"
     );
@@ -94,11 +93,11 @@ export function handleNextClick({
 
   const updatedQuestionsWithAnswers = [
     ...questionsWithAnswers,
-    { questionTag: currQuestion.tag, answerTag: currAnswer.tag },
+    { questionTag: currentQuestion.tag, answerTag: currentAnswer.tag },
   ];
 
   const nextQuestion = decisionTree.questions.find(
-    (elem) => elem.tag === currAnswer.next_question_tag
+    (elem) => elem.tag === currentAnswer.next_question_tag
   );
 
   if (nextQuestion === undefined) {

@@ -82,7 +82,9 @@ class QueueRoutes:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
 
-        reviews = ReviewCR.objects.filter(queue_id=queue_id).order_by("create_time")
+        reviews = ReviewCR.objects.filter(
+            queue_id=queue_id, questions_with_answers__isnull=True
+        ).order_by("create_time")
         review_array = [
             {"id": r.id, "entity_id": r.entity_id, "entity_type": r.entity_type}
             for r in reviews
@@ -129,7 +131,9 @@ class ReviewRoutes:
         next_review_id = None
         prev_review_id = None
         queue_reviews = list(
-            ReviewCR.objects.filter(queue_id=review.queue.id).order_by("create_time")
+            ReviewCR.objects.filter(
+                queue_id=review.queue.id, questions_with_answers__isnull=True
+            ).order_by("create_time")
         )
 
         prev_review_idx = bisect.bisect_left(
