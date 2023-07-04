@@ -53,8 +53,22 @@ class TestQueueRoutes:
             {"decision_tree_name": base_decision_tree.name},
             content_type="application/json",
         )
+        assert response.status_code == 200
 
         updated_queue_1 = QueueCR.objects.get(id=queue_1.id)
 
-        assert response.status_code == 200
         assert updated_queue_1.decision_tree is not None
+
+    @pytest.mark.django_db
+    def test_delete_queue_route(self, client, queue_1):
+        assert queue_1 is not None
+
+        response = client.post(
+            "/delete-queue/" + queue_1.name,
+            content_type="application/json",
+        )
+        assert response.status_code == 200
+
+        updated_queue_1 = QueueCR.objects.filter(id=queue_1.id).first()
+
+        assert updated_queue_1.decision_tree is None
