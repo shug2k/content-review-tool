@@ -42,3 +42,29 @@ def queue_2(base_decision_tree):
         name="Test Queue 2",
         decision_tree=base_decision_tree,
     )
+
+
+@pytest.fixture
+def text_review(queue_1):
+    return ReviewCR.objects.create(
+        entity_id="1",
+        entity_type="text",
+        entity_content="Testing out",
+        entity_create_time="2023-01-01 12:00:01Z",
+        user_id="10",
+        user_name="John Doe",
+        user_email="john@doe.com",
+        user_phone_number="+15555555555",
+        queue=queue_1,
+    )
+
+
+@pytest.fixture
+def image_review(queue_1):
+    return ReviewCR.objects.create(
+        entity_id="1",
+        entity_type="image",
+        entity_content="Testing out",
+        entity_create_time="2023-02-01 01:00:01Z",
+        queue=queue_1,
+    )

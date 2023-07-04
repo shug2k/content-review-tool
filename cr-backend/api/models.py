@@ -40,10 +40,14 @@ class QueueCR(models.Model):
 
 
 class ReviewCR(models.Model):
+    class EntityTypeChoices(models.TextChoices):
+        TEXT = "text"
+        IMAGE = "image"
+
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
     entity_id = models.CharField(128, default=None, blank=True, null=True)
-    entity_type = models.CharField(128, default=None, blank=True, null=True)
+    entity_type = models.CharField(128, choices=EntityTypeChoices.choices)
     entity_content = models.TextField()
     entity_create_time = models.DateTimeField(default=None, blank=True, null=True)
     entity_metadata = models.JSONField(default=None, blank=True, null=True)
