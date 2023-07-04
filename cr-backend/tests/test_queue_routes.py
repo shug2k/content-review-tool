@@ -61,7 +61,8 @@ class TestQueueRoutes:
 
     @pytest.mark.django_db
     def test_delete_queue_route(self, client, queue_1):
-        assert queue_1 is not None
+        pre_delete_queue_1 = QueueCR.objects.filter(id=queue_1.id).first()
+        assert pre_delete_queue_1 is not None
 
         response = client.post(
             "/delete-queue/" + queue_1.name,
@@ -69,6 +70,5 @@ class TestQueueRoutes:
         )
         assert response.status_code == 200
 
-        updated_queue_1 = QueueCR.objects.filter(id=queue_1.id).first()
-
-        assert updated_queue_1 is None
+        post_delete_queue_1 = QueueCR.objects.filter(id=queue_1.id).first()
+        assert post_delete_queue_1 is None
