@@ -57,13 +57,15 @@ class QueueRoutes:
         return HttpResponse("OK")
 
     @staticmethod
-    def modify_queue(request: HttpRequest, queue_id: int) -> HttpResponse:
+    # def modify_queue(request: HttpRequest, queue_id: int) -> HttpResponse:
+    def modify_queue(request: HttpRequest, queue_name: str) -> HttpResponse:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
         request_data = json.loads(request.body)
 
-        queue = QueueCR.objects.get(id=queue_id)
+        # queue = QueueCR.objects.get(id=queue_id)
+        queue = QueueCR.objects.get(name=queue_name)
 
         if "name" in request_data:
             queue.name = request_data["name"]
