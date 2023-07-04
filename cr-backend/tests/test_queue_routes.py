@@ -49,7 +49,7 @@ class TestQueueRoutes:
         assert queue_1.decision_tree is None
 
         response = client.post(
-            "/modify-queue/" + str(queue_1.name),
+            "/modify-queue/" + queue_1.name,
             {"decision_tree_name": base_decision_tree.name},
             content_type="application/json",
         )

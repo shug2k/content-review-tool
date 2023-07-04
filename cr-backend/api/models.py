@@ -5,7 +5,7 @@ from . import validators
 class DecisionTreeCR(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
-    name = models.CharField(128)
+    name = models.CharField(128, unique=True, db_index=True)
     tree = models.JSONField(validators=[validators.DecisionTreeValidator.validate_tree])
 
     def save(self, *args, **kwargs):
@@ -32,7 +32,7 @@ class DecisionTreeCR(models.Model):
 class QueueCR(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
-    name = models.CharField(128)
+    name = models.CharField(128, unique=True, db_index=True)
     decision_tree = models.ForeignKey(
         DecisionTreeCR, on_delete=models.CASCADE, default=None, blank=True, null=True
     )
