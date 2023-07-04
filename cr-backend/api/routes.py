@@ -79,11 +79,11 @@ class QueueRoutes:
         return HttpResponse("OK")
 
     @staticmethod
-    def delete_queue(request: HttpRequest, queue_id: int) -> HttpResponse:
+    def delete_queue(request: HttpRequest, queue_name: str) -> HttpResponse:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        queue = QueueCR.objects.get(id=queue_id)
+        queue = QueueCR.objects.get(name=queue_name)
 
         queue.delete()
 

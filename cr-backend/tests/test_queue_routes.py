@@ -71,4 +71,4 @@ class TestQueueRoutes:
 
         updated_queue_1 = QueueCR.objects.filter(id=queue_1.id).first()
 
-        assert updated_queue_1.decision_tree is None
+        assert updated_queue_1 is None
