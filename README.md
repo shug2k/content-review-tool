@@ -8,6 +8,8 @@ This is an open-source content review tool. It can enable you to review content 
 
 The app is organized into a frontend (cr-frontend) and backend (cr-backend) app. The frontend is written in Typescript using React, on the [NextJS](https://nextjs.org/) 13 framework. The backend is written in Python, on the [Django](https://www.djangoproject.com/) framework. The app sets up postgres for its DB. By default, it assumes a user `admin` can access the database `cr` and create databases (see [setup.sql](https://github.com/shug2k/content-review-tool/blob/main/cr-backend/setup.sql) for the commands to run to set up the database).
 
+Currently, only running locally is supported out of the box, with Docker support on both the frontend and backend coming soon.
+
 ## Running Locally
 
 To run locally for development:
@@ -23,4 +25,4 @@ To run locally for development:
 
 ## Getting Started
 
-Once you have the frontend and backend up and running, you can create queues and reviews.
+Once you have the frontend and backend up and running, you can create queues and reviews. To create a queue, send a POST request to `localhost:8000/create-queue`. To create reviews, send a POST request to `localhost:8000/create-review`. You should then see the queue show up at `localhost:3000`, and the reviews will be populated on the queue page.
