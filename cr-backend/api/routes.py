@@ -1,7 +1,14 @@
 import bisect
 import json
 
-from django.http import JsonResponse, HttpResponse, HttpRequest, HttpResponseNotAllowed
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpRequest,
+    HttpResponseNotAllowed,
+    HttpResponseBadRequest,
+)
 from api.models import QueueCR, DecisionTreeCR, ReviewCR
 
 
@@ -32,17 +39,20 @@ class QueueRoutes:
 
         request_data = json.loads(request.body)
 
-        queue = QueueCR(
-            name=request_data["name"],
-            decision_tree=DecisionTreeCR.objects.get(
-                name=request_data.get("decision_tree_name")
+        try:
+            QueueCR.objects.create(
+                name=request_data["name"],
+                decision_tree=DecisionTreeCR.objects.get(
+                    name=request_data["decision_tree_name"]
+                )
+                if "decision_tree_name" in request_data
+                else None,
+                prioritization_function=request_data.get("prioritization_function"),
             )
-            if "decision_tree_name" in request_data
-            else None,
-            prioritization_function=request_data.get("prioritization_function"),
-        )
-
-        queue.save()
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(
+                f"decision tree {request_data['decision_tree_name']} does not exist!"
+            )
 
         return HttpResponse("OK")
 
@@ -159,7 +169,7 @@ class ReviewRoutes:
 
         request_data = json.loads(request.body)
 
-        review = ReviewCR(
+        ReviewCR.objects.create(
             entity_id=request_data.get("entity_id"),
             entity_type=request_data.get("entity_type"),
             entity_content=request_data["entity_content"],
@@ -172,8 +182,6 @@ class ReviewRoutes:
             user_metadata=request_data.get("user_metadata"),
             queue=QueueCR.objects.get(name=request_data["queue_name"]),
         )
-
-        review.save()
 
         return HttpResponse("OK")
 
@@ -248,12 +256,10 @@ class DecisionTreeRoutes:
 
         request_data = json.loads(request.body)
 
-        decision_tree = DecisionTreeCR(
+        DecisionTreeCR.objects.create(
             name=request_data["name"],
             tree=request_data["tree"],
         )
-
-        decision_tree.save()
 
         return HttpResponse("OK")
 
