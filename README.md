@@ -25,4 +25,4 @@ To run locally for development:
 
 ## Getting Started
 
-Once you have the frontend and backend up and running, you can create queues and reviews. To create a queue, send a POST request to `localhost:8000/create-queue`. To create reviews, send a POST request to `localhost:8000/create-review`. You should then see the queue show up at `localhost:3000`, and the reviews will be populated on the queue page.
+Once you have the frontend and backend up and running, you can create queues and reviews. Lightweight documentation for the API is in the tech spec [here](https://docs.google.com/document/d/1RrkAMSJNbu9OlOCIW4aUG4aaOOFgmDWD3RFzBbTlbK0/edit#heading=h.s0w18q91dpuo). To create a queue, send a POST request to `localhost:8000/create-queue`. To create reviews, send a POST request to `localhost:8000/create-review`. You should then see the queue show up at `localhost:3000`, and the reviews will be populated on the queue page.
