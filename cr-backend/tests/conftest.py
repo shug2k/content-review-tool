@@ -60,11 +60,22 @@ def text_review(queue_1):
 
 
 @pytest.fixture
+def text_review_q2(queue_2):
+    return ReviewCR.objects.create(
+        entity_id="2",
+        entity_type="text",
+        entity_content="Testing out queue 2 with tree",
+        entity_create_time="2023-01-03 12:00:01Z",
+        queue=queue_2,
+    )
+
+
+@pytest.fixture
 def image_review(queue_1):
     return ReviewCR.objects.create(
-        entity_id="1",
+        entity_id="3",
         entity_type="image",
-        entity_content="Testing out",
+        entity_content="http://www.image.com/test",
         entity_create_time="2023-02-01 01:00:01Z",
         queue=queue_1,
     )

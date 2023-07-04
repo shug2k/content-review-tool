@@ -9,6 +9,7 @@ from django.http import (
     HttpRequest,
     HttpResponseNotAllowed,
     HttpResponseBadRequest,
+    HttpResponseNotFound,
 )
 from api.models import QueueCR, DecisionTreeCR, ReviewCR
 
@@ -157,7 +158,12 @@ class ReviewRoutes:
         if request.method != "GET":
             return HttpResponseNotAllowed(["GET"])
 
-        review = ReviewCR.objects.get(id=review_id)
+        try:
+            review = ReviewCR.objects.get(id=review_id)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound(
+                f"Review ID {review_id} does not exist on this server"
+            )
 
         next_review_id = None
         prev_review_id = None
