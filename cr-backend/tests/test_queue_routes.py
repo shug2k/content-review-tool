@@ -1,6 +1,8 @@
 import pytest
 import json
 
+from api.models import QueueCR, DecisionTreeCR, ReviewCR
+
 
 class TestQueueRoutes:
     @pytest.mark.django_db
@@ -41,3 +43,18 @@ class TestQueueRoutes:
 
         assert response.status_code == 400
         assert response.content.decode() == "decision tree test2 does not exist!"
+
+    @pytest.mark.django_db
+    def test_modify_queue_route(self, client, queue_1, base_decision_tree):
+        assert queue_1.decision_tree is None
+
+        response = client.post(
+            "/modify-queue/" + str(queue_1.id),
+            {"decision_tree_name": base_decision_tree.name},
+            content_type="application/json",
+        )
+
+        updated_queue_1 = QueueCR.objects.get(id=queue_1.id)
+
+        assert response.status_code == 200
+        assert updated_queue_1.decision_tree is not None
