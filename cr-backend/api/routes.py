@@ -2,6 +2,7 @@ import bisect
 import json
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from django.http import (
     JsonResponse,
     HttpResponse,
@@ -63,18 +64,33 @@ class QueueRoutes:
 
         request_data = json.loads(request.body)
 
-        queue = QueueCR.objects.get(name=queue_name)
+        try:
+            queue = QueueCR.objects.get(name=queue_name)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(
+                f"Queue {queue_name} does not exist! Please create it first"
+            )
 
         if "name" in request_data:
             queue.name = request_data["name"]
         if "decision_tree_name" in request_data:
-            queue.decision_tree = DecisionTreeCR.objects.get(
-                name=request_data["decision_tree_name"]
-            )
+            try:
+                queue.decision_tree = DecisionTreeCR.objects.get(
+                    name=request_data["decision_tree_name"]
+                )
+            except ObjectDoesNotExist:
+                return HttpResponseBadRequest(
+                    f"decision tree {request_data['decision_tree_name']} does not exist!"
+                )
         if "prioritization_function" in request_data:
             queue.prioritization_function = request_data["prioritization_function"]
 
-        queue.save()
+        try:
+            queue.save()
+        except IntegrityError:
+            return HttpResponseBadRequest(
+                f"Queue name '{request_data['name']}' already exists! Please use a different name"
+            )
 
         return HttpResponse("OK")
 
@@ -83,7 +99,10 @@ class QueueRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        queue = QueueCR.objects.get(name=queue_name)
+        try:
+            queue = QueueCR.objects.get(name=queue_name)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(f"Queue {queue_name} does not exist!")
 
         queue.delete()
 
