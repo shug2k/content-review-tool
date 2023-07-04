@@ -16,7 +16,9 @@ class QueueRoutes:
             {
                 "id": q.id,
                 "name": q.name,
-                "item_count": ReviewCR.objects.filter(queue_id=q.id).count(),
+                "item_count": ReviewCR.objects.filter(
+                    queue_id=q.id, questions_with_answers__isnull=True
+                ).count(),
             }
             for q in queues
         ]
