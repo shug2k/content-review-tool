@@ -25,13 +25,13 @@ SECRET_KEY = "django-insecure-9-m1*9j-4nfl-2sish!7lwxno98=uor^$70#-7i&w#5-iudysb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", ".ngrok-free.app"]
-
+ALLOWED_HOSTS = []
 
 # Application definition
 
 INSTALLED_APPS = [
     "api.apps.ApiConfig",
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -70,6 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "cr.wsgi.application"
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

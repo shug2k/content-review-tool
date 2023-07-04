@@ -37,7 +37,6 @@ export async function handleSubmitClick(
     body: JSON.stringify({
       questions_with_answers: updatedQuestionsWithAnswers,
     }),
-    mode: "no-cors" as RequestMode, // should remove this when going to prod
   };
   const res = await fetch(
     "http://localhost:8000/review/" + reviewId + "/store-result",
