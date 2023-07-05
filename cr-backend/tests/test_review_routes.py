@@ -150,7 +150,7 @@ def test_create_review_route_missing_queue(client, queue_1):
 
 
 @pytest.mark.django_db
-def test_create_review_route_wrong_queue(client):
+def test_create_review_route_wrong_queue(client, queue_1):
     response = client.post(
         "/create-review",
         {
@@ -163,3 +163,93 @@ def test_create_review_route_wrong_queue(client):
     )
     assert response.status_code == 400
     assert response.content.decode() == "queue 'Random queue' does not exist!"
+
+
+@pytest.mark.django_db
+def test_modify_review_route(client, text_review, queue_2):
+    response = client.post(
+        "/modify-review/" + str(text_review.id),
+        {
+            "entity_id": "128",
+            "entity_type": "image",
+            "entity_content": "http://www.image.com/test",
+            "user_id": "100",
+            "user_name": "Jane Doe",
+            "user_email": "jane@doe.com",
+            "user_phone_number": "+17771234567",
+            "queue_name": queue_2.name,
+        },
+        content_type="application/json",
+    )
+
+    assert response.status_code == 200
+
+    review = ReviewCR.objects.get(id=text_review.id)
+
+    assert review.entity_id == "128"
+    assert review.entity_type == "image"
+    assert review.entity_content == "http://www.image.com/test"
+    assert review.user_id == "100"
+    assert review.user_name == "Jane Doe"
+    assert review.user_email == "jane@doe.com"
+    assert review.user_phone_number == "+17771234567"
+    assert review.queue.id == queue_2.id
+
+
+@pytest.mark.django_db
+def test_modify_review_route_wrong_queue(client, text_review):
+    response = client.post(
+        "/modify-review/" + str(text_review.id),
+        {
+            "queue_name": "Random Queue",
+        },
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert response.content.decode() == "queue 'Random Queue' does not exist!"
+
+
+@pytest.mark.django_db
+def test_modify_review_route_missing_review(client):
+    response = client.post(
+        "/modify-review/104",
+        {
+            "entity_id": "111",
+        },
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert response.content.decode() == "Review 104 does not exist!"
+
+
+@pytest.mark.django_db
+def test_modify_review_route_validate_entity_type(client, text_review):
+    response = client.post(
+        "/modify-review/" + str(text_review.id),
+        {
+            "entity_type": "img",
+        },
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert "is not a valid choice." in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_modify_review_route_image_needs_url(client, text_review):
+    response = client.post(
+        "/modify-review/" + str(text_review.id),
+        {
+            "entity_type": "image",
+        },
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert (
+        response.content.decode()
+        == "For entity_type 'image', entity_content must be a valid URL!"
+    )

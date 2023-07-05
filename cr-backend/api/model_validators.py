@@ -173,10 +173,8 @@ class DecisionTreeValidator:
 class ReviewValidator:
     @staticmethod
     def validate_entity_type_and_content(entity_type: str, entity_content: str) -> None:
-        print(entity_type, entity_content)
         if entity_type == "image":
             is_url = validators.url(entity_content)
-            print(is_url)
             if not is_url:
                 raise ValidationError(
                     "For entity_type 'image', entity_content must be a valid URL!"
