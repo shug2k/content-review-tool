@@ -1,7 +1,7 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from api import validators
+from api import model_validators
 
 
 class TestDecisionTreeValidator:
@@ -51,7 +51,7 @@ class TestDecisionTreeValidator:
             "questions": [self.question_1, self.question_2],
         }
 
-        validators.DecisionTreeValidator.validate_tree(decision_tree)
+        model_validators.DecisionTreeValidator.validate_tree(decision_tree)
 
     def test_miss_start(self):
         decision_tree = {
@@ -59,7 +59,7 @@ class TestDecisionTreeValidator:
         }
 
         with pytest.raises(ValidationError, match="missing value"):
-            validators.DecisionTreeValidator.validate_tree(decision_tree)
+            model_validators.DecisionTreeValidator.validate_tree(decision_tree)
 
     def test_wrong_start(self):
         decision_tree = {
@@ -68,7 +68,7 @@ class TestDecisionTreeValidator:
         }
 
         with pytest.raises(ValidationError, match="not in decision tree"):
-            validators.DecisionTreeValidator.validate_tree(decision_tree)
+            model_validators.DecisionTreeValidator.validate_tree(decision_tree)
 
     def test_has_cycle(self):
         question_2_loop = {
@@ -83,7 +83,7 @@ class TestDecisionTreeValidator:
         }
 
         with pytest.raises(ValidationError, match="decision tree has a cycle"):
-            validators.DecisionTreeValidator.validate_tree(decision_tree)
+            model_validators.DecisionTreeValidator.validate_tree(decision_tree)
 
 
 # the cycle testing is more complex, so adding some test cases here
@@ -100,7 +100,7 @@ class TestGraphIntegrity:
 
         expected_order = ["q1", "q2", "q3", "q5", "q4"]
 
-        returned_order = validators.DecisionTreeValidator.topo_sort(start_node, g)
+        returned_order = model_validators.DecisionTreeValidator.topo_sort(start_node, g)
 
         for e, r in zip(expected_order, returned_order):
             assert e == r
@@ -114,7 +114,7 @@ class TestGraphIntegrity:
 
         expected_order = ["q1", "q2", "q2"]
 
-        returned_order = validators.DecisionTreeValidator.topo_sort(start_node, g)
+        returned_order = model_validators.DecisionTreeValidator.topo_sort(start_node, g)
 
         for e, r in zip(expected_order, returned_order):
             assert e == r
@@ -131,7 +131,7 @@ class TestGraphIntegrity:
 
         expected_order = ["q1", "q2", "q3", "q4", "q5", "q1"]
 
-        returned_order = validators.DecisionTreeValidator.topo_sort(start_node, g)
+        returned_order = model_validators.DecisionTreeValidator.topo_sort(start_node, g)
 
         for e, r in zip(expected_order, returned_order):
             assert e == r

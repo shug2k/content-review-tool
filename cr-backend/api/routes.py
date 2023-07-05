@@ -1,7 +1,7 @@
 import bisect
 import json
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import IntegrityError
 from django.http import (
     JsonResponse,
@@ -194,19 +194,22 @@ class ReviewRoutes:
 
         request_data = json.loads(request.body)
 
-        ReviewCR.objects.create(
-            entity_id=request_data.get("entity_id"),
-            entity_type=request_data.get("entity_type"),
-            entity_content=request_data["entity_content"],
-            entity_create_time=request_data.get("entity_create_time"),
-            entity_metadata=request_data.get("entity_metadata"),
-            user_id=request_data.get("user_id"),
-            user_name=request_data.get("user_name"),
-            user_email=request_data.get("user_email"),
-            user_phone_number=request_data.get("user_phone_number"),
-            user_metadata=request_data.get("user_metadata"),
-            queue=QueueCR.objects.get(name=request_data["queue_name"]),
-        )
+        try:
+            ReviewCR.objects.create(
+                entity_id=request_data.get("entity_id"),
+                entity_type=request_data.get("entity_type"),
+                entity_content=request_data["entity_content"],
+                entity_create_time=request_data.get("entity_create_time"),
+                entity_metadata=request_data.get("entity_metadata"),
+                user_id=request_data.get("user_id"),
+                user_name=request_data.get("user_name"),
+                user_email=request_data.get("user_email"),
+                user_phone_number=request_data.get("user_phone_number"),
+                user_metadata=request_data.get("user_metadata"),
+                queue=QueueCR.objects.get(name=request_data["queue_name"]),
+            )
+        except ValidationError as e:
+            return HttpResponseBadRequest(e)
 
         return HttpResponse("OK")
 

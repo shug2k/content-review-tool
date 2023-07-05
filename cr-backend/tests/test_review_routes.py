@@ -73,3 +73,59 @@ def test_get_review_route_wrong_review(client, text_review):
         response.content.decode()
         == f"Review ID {text_review.id + 102315} does not exist on this server"
     )
+
+
+@pytest.mark.django_db
+def test_create_review_route(client, queue_1):
+    response = client.post(
+        "/create-review",
+        {
+            "entity_id": "123",
+            "entity_type": "image",
+            "entity_content": "http://www.image.com/something",
+            "queue_name": queue_1.name,
+        },
+        content_type="application/json",
+    )
+
+    assert response.status_code == 200
+
+    review = ReviewCR.objects.get(entity_id="123")
+    assert review.entity_type == "image"
+    assert review.entity_content == "http://www.image.com/something"
+    assert review.queue.id == queue_1.id
+
+
+@pytest.mark.django_db
+def test_create_review_route_wrong_entity_type(client, queue_1):
+    response = client.post(
+        "/create-review",
+        {
+            "entity_id": "125",
+            "entity_type": "img",
+            "entity_content": "http://www.image.com/something",
+            "queue_name": queue_1.name,
+        },
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+    assert "'img' is not a valid choice" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_create_review_route_content_not_url_for_image(client, queue_1):
+    response = client.post(
+        "/create-review",
+        {
+            "entity_id": "125",
+            "entity_type": "image",
+            "entity_content": "Some random text",
+            "queue_name": queue_1.name,
+        },
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+    assert (
+        response.content.decode()
+        == "For entity_type 'image', entity_content must be a valid URL!"
+    )
