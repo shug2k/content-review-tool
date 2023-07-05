@@ -20,11 +20,11 @@ urlpatterns = [
     # Decision Trees
     path("create-decision-tree", routes.DecisionTreeRoutes.create_decision_tree),
     path(
-        "modify-decision-tree/<int:decision_tree_id>",
+        "modify-decision-tree/<str:decision_tree_name>",
         routes.DecisionTreeRoutes.modify_decision_tree,
     ),
     path(
-        "delete-decision-tree/<int:decision_tree_id>",
+        "delete-decision-tree/<str:decision_tree_name>",
         routes.DecisionTreeRoutes.delete_decision_tree,
     ),
 ]

@@ -233,7 +233,10 @@ class ReviewRoutes:
 
         request_data = json.loads(request.body)
 
-        review = ReviewCR.objects.get(id=review_id)
+        try:
+            review = ReviewCR.objects.get(id=review_id)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(f"Review {review_id} does not exist!")
 
         if "entity_id" in request_data:
             review.entity_id = request_data["entity_id"]
@@ -256,9 +259,17 @@ class ReviewRoutes:
         if "user_metadata" in request_data:
             review.user_metadata = request_data["user_metadata"]
         if "queue_name" in request_data:
-            review.queue = QueueCR.objects.get(name=request_data["queue_name"])
+            try:
+                review.queue = QueueCR.objects.get(name=request_data["queue_name"])
+            except ObjectDoesNotExist:
+                return HttpResponseBadRequest(
+                    f"queue '{request_data['queue_name']}' does not exist!"
+                )
 
-        review.save()
+        try:
+            review.save()
+        except ValidationError as e:
+            return HttpResponseBadRequest(e)
 
         return HttpResponse("OK")
 
@@ -282,7 +293,10 @@ class ReviewRoutes:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        review = ReviewCR.objects.get(id=review_id)
+        try:
+            review = ReviewCR.objects.get(id=review_id)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(f"Review {review_id} does not exist!")
 
         review.delete()
 
@@ -297,41 +311,57 @@ class DecisionTreeRoutes:
 
         request_data = json.loads(request.body)
 
-        DecisionTreeCR.objects.create(
-            name=request_data["name"],
-            tree=request_data["tree"],
-        )
+        try:
+            DecisionTreeCR.objects.create(
+                name=request_data["name"],
+                tree=request_data["tree"],
+            )
+        except ValidationError as e:
+            return HttpResponseBadRequest(e)
 
         return HttpResponse("OK")
 
     @staticmethod
     def modify_decision_tree(
-        request: HttpRequest, decision_tree_id: int
+        request: HttpRequest, decision_tree_name: str
     ) -> HttpResponse:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
         request_data = json.loads(request.body)
 
-        decision_tree = DecisionTreeCR.objects.get(id=decision_tree_id)
+        try:
+            decision_tree = DecisionTreeCR.objects.get(name=decision_tree_name)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(
+                f"Decision tree {decision_tree_name} does not exist!"
+            )
 
         if "name" in request_data:
             decision_tree.name = request_data["name"]
         if "decision_tree" in request_data:
             decision_tree.tree = request_data["decision_tree"]
 
-        decision_tree.save()
+        try:
+            decision_tree.save()
+        except ValidationError as e:
+            return HttpResponseBadRequest(e)
 
         return HttpResponse("OK")
 
     @staticmethod
     def delete_decision_tree(
-        request: HttpRequest, decision_tree_id: int
+        request: HttpRequest, decision_tree_name: str
     ) -> HttpResponse:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
-        decision_tree = DecisionTreeCR.objects.get(id=decision_tree_id)
+        try:
+            decision_tree = DecisionTreeCR.objects.get(name=decision_tree_name)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(
+                f"Decision tree {decision_tree_name} does not exist!"
+            )
 
         decision_tree.delete()
 
