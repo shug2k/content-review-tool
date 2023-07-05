@@ -129,3 +129,37 @@ def test_create_review_route_content_not_url_for_image(client, queue_1):
         response.content.decode()
         == "For entity_type 'image', entity_content must be a valid URL!"
     )
+
+
+@pytest.mark.django_db
+def test_create_review_route_missing_queue(client, queue_1):
+    response = client.post(
+        "/create-review",
+        {
+            "entity_id": "125",
+            "entity_type": "image",
+            "entity_content": "Some random text",
+        },
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+    assert (
+        response.content.decode()
+        == "Review requires an entity_type, entity_content, and queue_name"
+    )
+
+
+@pytest.mark.django_db
+def test_create_review_route_wrong_queue(client):
+    response = client.post(
+        "/create-review",
+        {
+            "entity_id": "125",
+            "entity_type": "image",
+            "entity_content": "Some random text",
+            "queue_name": "Random queue",
+        },
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+    assert response.content.decode() == "queue 'Random queue' does not exist!"

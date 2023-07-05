@@ -194,10 +194,19 @@ class ReviewRoutes:
 
         request_data = json.loads(request.body)
 
+        if (
+            "entity_type" not in request_data
+            or "entity_content" not in request_data
+            or "queue_name" not in request_data
+        ):
+            return HttpResponseBadRequest(
+                "Review requires an entity_type, entity_content, and queue_name"
+            )
+
         try:
             ReviewCR.objects.create(
                 entity_id=request_data.get("entity_id"),
-                entity_type=request_data.get("entity_type"),
+                entity_type=request_data["entity_type"],
                 entity_content=request_data["entity_content"],
                 entity_create_time=request_data.get("entity_create_time"),
                 entity_metadata=request_data.get("entity_metadata"),
@@ -210,6 +219,10 @@ class ReviewRoutes:
             )
         except ValidationError as e:
             return HttpResponseBadRequest(e)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(
+                f"queue '{request_data['queue_name']}' does not exist!"
+            )
 
         return HttpResponse("OK")
 
