@@ -16,6 +16,8 @@ limitations under the License.
 
 import bisect
 import json
+from dataclasses import asdict
+from dacite import from_dict
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import IntegrityError
@@ -28,6 +30,7 @@ from django.http import (
     HttpResponseNotFound,
 )
 from api.models import QueueCR, DecisionTreeCR, ReviewCR
+from .modules import DecisionTree, convert_questions_with_answers
 
 
 class QueueRoutes:
@@ -296,11 +299,38 @@ class ReviewRoutes:
 
         request_data = json.loads(request.body)
 
-        review = ReviewCR.objects.get(id=review_id)
+        try:
+            review = ReviewCR.objects.get(id=review_id)
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest(f"Review {review_id} does not exist!")
 
-        review.questions_with_answers = request_data["questions_with_answers"]
+        decision_tree = (
+            review.queue.decision_tree.tree
+            if review.queue.decision_tree
+            else DecisionTreeCR.default_decision_tree()
+        )
 
-        review.save()
+        if "questions_with_answers" not in request_data or not isinstance(
+            request_data["questions_with_answers"], list
+        ):
+            return HttpResponseBadRequest(
+                "Request requires questions_with_answers in list format"
+            )
+
+        try:
+            review.questions_with_answers = asdict(
+                convert_questions_with_answers(
+                    request_data["questions_with_answers"],
+                    from_dict(data_class=DecisionTree, data=decision_tree),
+                )
+            )
+        except ValidationError as e:
+            return HttpResponseBadRequest(e)
+
+        try:
+            review.save()
+        except ValidationError as e:
+            return HttpResponseBadRequest(e)
 
         return HttpResponse("OK")
 

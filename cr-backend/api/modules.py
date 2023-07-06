@@ -18,6 +18,7 @@ limitations under the License.
 # so making a file for now
 
 from dataclasses import dataclass
+from django.core.exceptions import ValidationError
 
 
 @dataclass
@@ -60,5 +61,22 @@ def construct_tree_graph(tree: DecisionTree) -> dict[str, list[str]]:
 
 def convert_questions_with_answers(
     questions_with_answers_fe: list[dict[str, str]], tree: DecisionTree
-) -> dict:
-    pass
+) -> QuestionsWithAnswers:
+    question_answer_map = {}
+    decisions = []
+
+    try:
+        for item in questions_with_answers_fe:
+            question_answer_map[item["questionTag"]] = item["answerTag"]
+            for q in tree.questions:
+                if q.tag == item["questionTag"]:
+                    for a in q.answers:
+                        if a.tag == item["answerTag"]:
+                            if a.decision is not None:
+                                decisions.append(a.decision)
+    except KeyError as e:
+        return ValidationError(e)
+
+    return QuestionsWithAnswers(
+        question_answer_map=question_answer_map, decisions=decisions
+    )

@@ -257,20 +257,50 @@ def test_modify_review_route_image_needs_url(client, text_review):
 
 @pytest.mark.django_db
 def test_review_result_route(client, text_review):
-    """
     response = client.post(
         "/review/" + str(text_review.id) + "/store-result",
-        {"something": "else"},
+        {
+            "questions_with_answers": [
+                {"questionTag": "is_violating", "answerTag": "yes"}
+            ]
+        },
         content_type="application/json",
     )
 
     assert response.status_code == 200
 
-    review = ReviewCR.objects.get(id=text_review.id)
 
-    assert review.entity_id == "128"
-    """
-    pass
+@pytest.mark.django_db
+def test_review_result_route_wrong_review(client, text_review):
+    response = client.post(
+        "/review/" + str(text_review.id + 102636) + "/store-result",
+        {
+            "questions_with_answers": [
+                {"questionTag": "is_violating", "answerTag": "yes"}
+            ]
+        },
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert (
+        response.content.decode() == f"Review {text_review.id+102636} does not exist!"
+    )
+
+
+@pytest.mark.django_db
+def test_review_result_route_malformed_input(client, text_review):
+    response = client.post(
+        "/review/" + str(text_review.id) + "/store-result",
+        {"questions_with_answers": {"questionTag": "is_violating", "answerTag": "yes"}},
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert (
+        response.content.decode()
+        == "Request requires questions_with_answers in list format"
+    )
 
 
 @pytest.mark.django_db
