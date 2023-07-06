@@ -44,7 +44,7 @@ def test_create_queue_route_wrong_tree(client):
     )
 
     assert response.status_code == 400
-    assert response.content.decode() == "decision tree test2 does not exist!"
+    assert response.content.decode() == "decision tree 'test2' does not exist!"
 
 
 @pytest.mark.django_db
@@ -73,7 +73,7 @@ def test_modify_queue_route_wrong_queue(client, queue_1, base_decision_tree):
     assert response.status_code == 400
     assert (
         response.content.decode()
-        == f"Queue {queue_1.name+'_random'} does not exist! Please create it first"
+        == f"Queue '{queue_1.name+'_random'}' does not exist! Please create it first"
     )
 
 
@@ -85,7 +85,7 @@ def test_modify_queue_route_wrong_tree(client, queue_1):
         content_type="application/json",
     )
     assert response.status_code == 400
-    assert response.content.decode() == f"decision tree tree1 does not exist!"
+    assert response.content.decode() == f"decision tree 'tree1' does not exist!"
 
 
 @pytest.mark.django_db
@@ -125,5 +125,5 @@ def test_delete_queue_route_wrong_name(client, queue_1):
     )
     assert response.status_code == 400
     assert (
-        response.content.decode() == f"Queue {queue_1.name+'_random'} does not exist!"
+        response.content.decode() == f"Queue '{queue_1.name+'_random'}' does not exist!"
     )

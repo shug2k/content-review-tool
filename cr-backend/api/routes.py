@@ -53,7 +53,7 @@ class QueueRoutes:
             )
         except ObjectDoesNotExist:
             return HttpResponseBadRequest(
-                f"decision tree {request_data['decision_tree_name']} does not exist!"
+                f"decision tree '{request_data['decision_tree_name']}' does not exist!"
             )
 
         return HttpResponse("OK")
@@ -69,7 +69,7 @@ class QueueRoutes:
             queue = QueueCR.objects.get(name=queue_name)
         except ObjectDoesNotExist:
             return HttpResponseBadRequest(
-                f"Queue {queue_name} does not exist! Please create it first"
+                f"Queue '{queue_name}' does not exist! Please create it first"
             )
 
         if "name" in request_data:
@@ -81,7 +81,7 @@ class QueueRoutes:
                 )
             except ObjectDoesNotExist:
                 return HttpResponseBadRequest(
-                    f"decision tree {request_data['decision_tree_name']} does not exist!"
+                    f"decision tree '{request_data['decision_tree_name']}' does not exist!"
                 )
         if "prioritization_function" in request_data:
             queue.prioritization_function = request_data["prioritization_function"]
@@ -103,7 +103,7 @@ class QueueRoutes:
         try:
             queue = QueueCR.objects.get(name=queue_name)
         except ObjectDoesNotExist:
-            return HttpResponseBadRequest(f"Queue {queue_name} does not exist!")
+            return HttpResponseBadRequest(f"Queue '{queue_name}' does not exist!")
 
         queue.delete()
 
@@ -334,7 +334,7 @@ class DecisionTreeRoutes:
             decision_tree = DecisionTreeCR.objects.get(name=decision_tree_name)
         except ObjectDoesNotExist:
             return HttpResponseBadRequest(
-                f"Decision tree {decision_tree_name} does not exist!"
+                f"Decision tree '{decision_tree_name}' does not exist!"
             )
 
         if "name" in request_data:
@@ -360,7 +360,7 @@ class DecisionTreeRoutes:
             decision_tree = DecisionTreeCR.objects.get(name=decision_tree_name)
         except ObjectDoesNotExist:
             return HttpResponseBadRequest(
-                f"Decision tree {decision_tree_name} does not exist!"
+                f"Decision tree '{decision_tree_name}' does not exist!"
             )
 
         decision_tree.delete()

@@ -253,3 +253,46 @@ def test_modify_review_route_image_needs_url(client, text_review):
         response.content.decode()
         == "For entity_type 'image', entity_content must be a valid URL!"
     )
+
+
+@pytest.mark.django_db
+def test_review_result_route(client, text_review):
+    """
+    response = client.post(
+        "/review/" + str(text_review.id) + "/store-result",
+        {"something": "else"},
+        content_type="application/json",
+    )
+
+    assert response.status_code == 200
+
+    review = ReviewCR.objects.get(id=text_review.id)
+
+    assert review.entity_id == "128"
+    """
+    pass
+
+
+@pytest.mark.django_db
+def test_delete_review_route(client, text_review):
+    pre_delete_review = ReviewCR.objects.filter(id=text_review.id).first()
+    assert pre_delete_review is not None
+
+    response = client.post(
+        "/delete-review/" + str(text_review.id),
+        content_type="application/json",
+    )
+    assert response.status_code == 200
+
+    post_delete_review = ReviewCR.objects.filter(id=text_review.id).first()
+    assert post_delete_review is None
+
+
+@pytest.mark.django_db
+def test_delete_review_route_wrong_id(client, text_review):
+    response = client.post(
+        "/delete-review/16239",
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+    assert response.content.decode() == "Review 16239 does not exist!"

@@ -68,5 +68,10 @@ class ReviewCR(models.Model):
     )
     user_metadata = models.JSONField(default=None, blank=True, null=True)
     queue = models.ForeignKey(QueueCR, on_delete=models.CASCADE)
-    questions_with_answers = models.JSONField(default=None, blank=True, null=True)
+    questions_with_answers = models.JSONField(
+        default=None,
+        blank=True,
+        null=True,
+        validators=[model_validators.ReviewValidator.validate_questions_with_answers],
+    )
     score = models.FloatField(default=None, blank=True, null=True)

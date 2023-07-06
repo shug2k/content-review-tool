@@ -26,6 +26,12 @@ class DecisionTree:
     questions: list[Question]
 
 
+@dataclass
+class QuestionsWithAnswers:
+    question_answer_map: dict[str, str]
+    decisions: list[str]
+
+
 class DecisionTreeValidator:
     @staticmethod
     def construct_tree_graph(tree: DecisionTree) -> dict[str, list[str]]:
@@ -179,3 +185,14 @@ class ReviewValidator:
                 raise ValidationError(
                     "For entity_type 'image', entity_content must be a valid URL!"
                 )
+
+    @staticmethod
+    def validate_questions_with_answers(questions_with_answers: dict) -> None:
+        # null or empty is valid here
+        if questions_with_answers is None or len(questions_with_answers) == 0:
+            return
+
+        try:
+            from_dict(data_class=QuestionsWithAnswers, data=questions_with_answers)
+        except Exception as e:
+            raise ValidationError(e)
