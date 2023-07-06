@@ -1,49 +1,28 @@
-from dataclasses import dataclass
+"""
+Copyright 2023, Sagnik Ghosh
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import validators
 
 from dacite import from_dict
 from django.core.exceptions import ValidationError
-
-
-@dataclass
-class Answer:
-    tag: str
-    text: str
-    decision: str | None
-    next_question_tag: str | None
-
-
-@dataclass
-class Question:
-    tag: str
-    text: str
-    answers: list[Answer]
-
-
-@dataclass
-class DecisionTree:
-    start_question_tag: str
-    questions: list[Question]
-
-
-@dataclass
-class QuestionsWithAnswers:
-    question_answer_map: dict[str, str]
-    decisions: list[str]
+from .modules import DecisionTree, QuestionsWithAnswers, construct_tree_graph
 
 
 class DecisionTreeValidator:
     @staticmethod
-    def construct_tree_graph(tree: DecisionTree) -> dict[str, list[str]]:
-        g = {}
-        for question in tree.questions:
-            g[question.tag] = []
-            for answer in question.answers:
-                if answer.next_question_tag:
-                    g[question.tag].append(answer.next_question_tag)
-
-        return g
-
     @staticmethod
     def missing_questions(g: dict[str, list[str]]) -> list[str]:
         all_nodes = set([node for node in g.keys()])
@@ -149,7 +128,7 @@ class DecisionTreeValidator:
             )
 
         # validate the graph for missing questions, extra questions, cycles
-        question_graph = DecisionTreeValidator.construct_tree_graph(tree_obj)
+        question_graph = construct_tree_graph(tree_obj)
 
         missing_qs = DecisionTreeValidator.missing_questions(question_graph)
 
