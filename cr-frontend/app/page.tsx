@@ -31,7 +31,7 @@ export default async function Queues() {
     <div>
       <div className="flex bg-white border border-gray-300 items-center max-sm:justify-center w-full h-16">
         <p className="w-fit h-7 text-xl font-medium text-gray-500 px-4 md:mx-2">
-          <span className="mx-3 lg:mx-4 hover:text-black">Queues</span>
+          <span className="mx-3 lg:mx-4">Queues</span>
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-1 lg:mx-8 py-4">
