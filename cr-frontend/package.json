@@ -29,7 +29,6 @@
     "@types/jest": "^29.5.3",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.6.1",
-    "jest-mock-fetch": "^2.0.5",
     "next-router-mock": "^0.9.7",
     "ts-jest": "^29.1.1"
   }

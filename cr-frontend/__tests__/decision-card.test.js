@@ -27,7 +27,7 @@ const basicDecisionTree = {
 };
 
 describe('Decision card rendering', () => {
-  it('renders basic question', async () => {
+  it('answers basic question', async () => {
     mockRouter.push("/review/1");
     render(
       <DecisionCard
