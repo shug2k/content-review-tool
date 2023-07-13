@@ -4,23 +4,20 @@ import mockRouter from 'next-router-mock';
 import { act } from 'react-dom/test-utils';
 
 import DecisionCard from '../app/review/components/decision-card';
-//import * as decisions from '../app/review/utils/decisions';
 
 jest.mock('../app/review/utils/decisions', () => {
-  // Require the original module to not be mocked...
   const originalModule = jest.requireActual('../app/review/utils/decisions');
 
   return {
     handleBackClick: originalModule.handleBackClick,
     handleNextClick: originalModule.handleNextClick,
     handleSubmitClick: jest.fn((reviewId, questionsWithAnswers, currentQuestion, currentAnswer) => {
-      return;
+      originalModule.handleSubmitClick(reviewId, questionsWithAnswers, currentQuestion, currentAnswer);
     }),
   };
 });
 
-const handleSubmitClick = require('../app/review/utils/decisions').handleSubmitClick;
-
+const mockHandleSubmitClick = require('../app/review/utils/decisions').handleSubmitClick;
 
 const yesAnswer = {
     tag: "yes",
@@ -86,7 +83,7 @@ describe('Decision card rendering', () => {
     const submit = screen.getByText("Submit");
     act(() => {
       fireEvent.click(submit);
-      expect(handleSubmitClick).toHaveBeenCalledWith(
+      expect(mockHandleSubmitClick).toHaveBeenCalledWith(
         "1",
         [],
         violatingQuestion,
