@@ -1,5 +1,8 @@
 import '@testing-library/jest-dom';
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import mockRouter from 'next-router-mock';
+import { act } from 'react-dom/test-utils';
+
 import DecisionCard from '../app/review/components/decision-card';
 
 const yesAnswer = {
@@ -24,16 +27,50 @@ const basicDecisionTree = {
 };
 
 describe('Decision card rendering', () => {
-  it('renders basic question', () => {
-    const { getByText } = render(
+  it('renders basic question', async () => {
+    mockRouter.push("/review/1");
+    render(
       <DecisionCard
         reviewId="1"
         decisionTree={basicDecisionTree}
       />
     );
 
-    expect(getByText("Is this content violating?")).toBeInTheDocument();
-    expect(getByText("Yes")).toBeInTheDocument();
-    expect(getByText("No")).toBeInTheDocument();
+    expect(screen.getByText("Is this content violating?")).toBeInTheDocument();
+    expect(screen.getByText("Yes")).toBeInTheDocument();
+    expect(screen.getByText("No")).toBeInTheDocument();
+    expect(screen.queryByText("Back")).toBeNull();
+    expect(screen.queryByText("Next")).toBeNull();
+    expect(screen.queryByText("Submit")).toBeNull();
+
+    // click yes, expect submit to show up, back and next to be hidden
+    const yesRadio = screen.getByLabelText("Yes");
+    act(() => fireEvent.click(yesRadio));
+
+    await screen.findByText("Submit");
+    expect(screen.queryByText("Back")).toBeNull();
+    expect(screen.queryByText("Next")).toBeNull();
+
+    // click no, expect submit to stay up, back and next to be hidden
+    const noRadio = screen.getByLabelText("No");
+    act(() => fireEvent.click(noRadio));
+
+    await screen.findByText("Submit");
+    expect(screen.queryByText("Back")).toBeNull();
+    expect(screen.queryByText("Next")).toBeNull();
+
+    expect(mockRouter).toMatchObject({ 
+        pathname: "/review/1",
+    });
+
+    global.fetch = jest.fn(() => Promise.resolve("OK"));
+
+    // click submit, expect redirect to '/'
+    const submit = screen.getByText("Submit");
+    act(() => fireEvent.click(submit));
+
+    await waitFor(() => expect(mockRouter).toMatchObject({ 
+        pathname: "/",
+    }));
   });
 });

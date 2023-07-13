@@ -128,7 +128,7 @@ const DecisionCard: FC<DecisionCardProps> = ({reviewId, nextReviewId, decisionTr
                 value={item.tag}
                 onClick={() => {handleRadioClick(item)}}
               />
-              <label htmlFor={item.tag}>{item.text}</label>
+              <label htmlFor={currentQuestion.tag + '_' + item.tag}>{item.text}</label>
             </div>
           );
         })}
