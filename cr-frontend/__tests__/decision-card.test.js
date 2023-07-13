@@ -4,6 +4,9 @@ import mockRouter from 'next-router-mock';
 import { act } from 'react-dom/test-utils';
 
 import DecisionCard from '../app/review/components/decision-card';
+import * as decisions from '../app/review/utils/decisions';
+
+jest.mock('../app/review/utils/decisions');
 
 const yesAnswer = {
     tag: "yes",
@@ -67,7 +70,15 @@ describe('Decision card rendering', () => {
 
     // click submit, expect redirect to '/'
     const submit = screen.getByText("Submit");
-    act(() => fireEvent.click(submit));
+    act(() => {
+      fireEvent.click(submit);
+      expect(decisions.handleSubmitClick).toHaveBeenCalledWith(
+        "1",
+        [],
+        violatingQuestion,
+        noAnswer
+      );
+    });
 
     await waitFor(() => expect(mockRouter).toMatchObject({ 
         pathname: "/",
