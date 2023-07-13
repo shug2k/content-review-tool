@@ -33,5 +33,7 @@ describe('Decision card rendering', () => {
     );
 
     expect(getByText("Is this content violating?")).toBeInTheDocument();
+    expect(getByText("Yes")).toBeInTheDocument();
+    expect(getByText("No")).toBeInTheDocument();
   });
 });
