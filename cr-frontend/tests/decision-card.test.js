@@ -4,6 +4,7 @@ import mockRouter from 'next-router-mock';
 import { act } from 'react-dom/test-utils';
 
 import DecisionCard from '../app/review/components/decision-card';
+import { yesAnswer, noAnswer, violatingQuestion, basicDecisionTree } from "./test-objects";
 
 jest.mock('../app/review/utils/decisions', () => {
   const originalModule = jest.requireActual('../app/review/utils/decisions');
@@ -18,27 +19,6 @@ jest.mock('../app/review/utils/decisions', () => {
 });
 
 const mockHandleSubmitClick = require('../app/review/utils/decisions').handleSubmitClick;
-
-const yesAnswer = {
-    tag: "yes",
-    text: "Yes",
-}
-
-const noAnswer = {
-    tag: "no",
-    text: "No",
-}
-
-const violatingQuestion = {
-    tag: "is_violating",
-    text:"Is this content violating?",
-    answers: [yesAnswer, noAnswer],
-}
-
-const basicDecisionTree = {
-    start_question_tag: "is_violating",
-    questions: [violatingQuestion],
-};
 
 describe('Decision card rendering', () => {
   it('answers basic question', async () => {
