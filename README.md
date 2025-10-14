@@ -2,27 +2,184 @@
 
 ![image](screenshot.png)
 
-This is an open-source content review tool. It can enable you to review content by setting up queues and review objects, and providing a UI to review those objects. It also features the ability to set up custom decision trees for your queues. You can read the full product spec [here](https://docs.google.com/document/d/1GcjrolAkemedJYWHDe9G63NyJ0MOy9ej5mvuh7tyrww/edit).
+An open-source content moderation and review platform that enables organizations to efficiently review and moderate content through customizable decision trees and queue-based workflows.
 
-## Tech Stack
+## ✨ Features
 
-The app is organized into a frontend (cr-frontend) and backend (cr-backend) app. The frontend is written in Typescript using React, on the [NextJS](https://nextjs.org/) 13 framework. The backend is written in Python, on the [Django](https://www.djangoproject.com/) framework. The app sets up postgres for its DB. By default, it assumes a user `admin` can access the database `cr` and create databases (see [setup.sql](https://github.com/shug2k/content-review-tool/blob/main/cr-backend/setup.sql) for the commands to run to set up the database).
+- **📋 Queue-based Content Management**: Organize content reviews into customizable queues
+- **🌳 Custom Decision Trees**: Create flexible decision workflows with JSON-based configurations
+- **👥 User Metadata Tracking**: Comprehensive user information and review history
+- **🖼️ Multi-content Support**: Handle both text and image content types
+- **⚡ Real-time Updates**: Live queue counts and review status updates
+- **🧪 Comprehensive Testing**: Full test coverage for both frontend and backend
 
-Currently, only running locally is supported out of the box, with Docker support on both the frontend and backend coming soon.
+You can read the full product specification [here](https://docs.google.com/document/d/1GcjrolAkemedJYWHDe9G63NyJ0MOy9ej5mvuh7tyrww/edit).
 
-## Running Locally
+## 🏗️ Architecture
 
-To run locally for development:
+### Frontend (`cr-frontend`)
+- **Framework**: Next.js 13.4.4 with TypeScript
+- **Styling**: Tailwind CSS
+- **Testing**: Jest with React Testing Library
+- **Port**: `localhost:3000`
 
-1. Install postgresql, Python 3.10 or greater, and NodeJS
-2. Ensure postgres is running
-3. Run the commands in [setup.sql](https://github.com/shug2k/content-review-tool/blob/main/cr-backend/setup.sql) for postgres
-4. Run `npm i` in `cr-frontend`
-5. Run `pip install -r requirements.txt` in `cr-backend`
-6. Run `npm run dev` in `cr-frontend` in one window
-7. In another window, run `python manage.py migrate` to run migrations (if this fails, you probably set up your postgres incorrectly)
-8. Run `python manage.py runserver` in `cr-backend`
+### Backend (`cr-backend`)
+- **Framework**: Django 4.2.3 with Python 3.10+
+- **Database**: PostgreSQL
+- **API**: RESTful endpoints
+- **Testing**: pytest-django
+- **Port**: `localhost:8000`
 
-## Getting Started
+### Database Schema
+- **DecisionTreeCR**: JSON-based decision workflows
+- **QueueCR**: Review queues with optional decision trees
+- **ReviewCR**: Content items with entity and user metadata
 
-Once you have the frontend and backend up and running, you can create queues and reviews. Lightweight documentation for the API is in the tech spec [here](https://docs.google.com/document/d/1RrkAMSJNbu9OlOCIW4aUG4aaOOFgmDWD3RFzBbTlbK0/edit#heading=h.s0w18q91dpuo). To create a queue, send a POST request to `localhost:8000/create-queue`. To create reviews, send a POST request to `localhost:8000/create-review`. You should then see the queue show up at `localhost:3000`, and the reviews will be populated on the queue page. You can check sample requests in the [tests](https://github.com/shug2k/content-review-tool/tree/main/cr-backend/tests) folder - search for `response.status_code == 200` for test cases with valid requests.
+## 🚀 Quick Start
+
+### Prerequisites
+- PostgreSQL 12+
+- Python 3.10+
+- Node.js 16+
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/shug2k/content-review-tool.git
+   cd content-review-tool
+   ```
+
+2. **Database Setup**
+   ```bash
+   # Ensure PostgreSQL is running
+   sudo service postgresql start  # Linux
+   brew services start postgresql  # macOS
+
+   # Run database setup
+   psql -U postgres -f cr-backend/setup.sql
+   ```
+
+3. **Backend Setup**
+   ```bash
+   cd cr-backend
+   pip install -r requirements.txt
+   python manage.py migrate
+   python manage.py runserver
+   ```
+
+4. **Frontend Setup** (in a new terminal)
+   ```bash
+   cd cr-frontend
+   npm install
+   npm run dev
+   ```
+
+5. **Access the Application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+
+### Testing
+```bash
+# Backend tests
+cd cr-backend && python -m pytest
+
+# Frontend tests
+cd cr-frontend && npm test
+```
+
+## 📖 API Usage
+
+### Create a Queue
+```bash
+curl -X POST http://localhost:8000/create-queue \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Content Moderation Queue",
+    "decision_tree": {
+      "start_question_tag": "is_violating",
+      "questions": [
+        {
+          "tag": "is_violating",
+          "text": "Is this content violating?",
+          "answers": [
+            {"tag": "yes", "text": "Yes", "decision": "remove"},
+            {"tag": "no", "text": "No", "decision": "approve"}
+          ]
+        }
+      ]
+    }
+  }'
+```
+
+### Create a Review Item
+```bash
+curl -X POST http://localhost:8000/create-review \
+  -H "Content-Type: application/json" \
+  -d '{
+    "queue_id": 1,
+    "entity_type": "text",
+    "entity_content": "Sample content to review",
+    "user_id": "user123",
+    "user_name": "John Doe"
+  }'
+```
+
+### Get All Queues
+```bash
+curl http://localhost:8000/queues
+```
+
+For more detailed API examples, check the [test files](cr-backend/tests/) in the backend directory.
+
+## 🏛️ Project Structure
+
+```
+content-review-tool/
+├── cr-frontend/           # Next.js frontend application
+│   ├── app/              # Next.js 13 app directory
+│   │   ├── page.tsx      # Queue listing page
+│   │   ├── queue/        # Queue detail pages
+│   │   └── review/       # Review interface
+│   └── tests/            # Frontend test suite
+├── cr-backend/           # Django backend API
+│   ├── api/              # Main API application
+│   │   ├── models.py     # Database models
+│   │   ├── routes.py     # API endpoints
+│   │   └── validators.py # Input validation
+│   └── tests/            # Backend test suite
+└── docs/                 # Documentation (coming soon)
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Workflow
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes and add tests
+4. Run the test suite: `npm test` (frontend) and `pytest` (backend)
+5. Commit your changes: `git commit -am 'Add new feature'`
+6. Push to the branch: `git push origin feature/your-feature`
+7. Submit a pull request
+
+## 📋 Roadmap
+
+- [ ] Docker containerization
+- [ ] Authentication & authorization
+- [ ] Real-time notifications
+- [ ] Advanced analytics dashboard
+- [ ] Bulk operations
+- [ ] API rate limiting
+- [ ] Export functionality
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+- 📖 Documentation: [Product Specification](https://docs.google.com/document/d/1GcjrolAkemedJYWHDe9G63NyJ0MOy9ej5mvuh7tyrww/edit)
+- 🐛 Issues: [GitHub Issues](https://github.com/shug2k/content-review-tool/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/shug2k/content-review-tool/discussions)
